@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { products } from "@/lib/products";
+import { useProducts } from "@/lib/products";
 
 export const Route = createFileRoute("/category/$categoryId")({
   head: ({ match }) => ({
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/category/$categoryId")({
 
 function CategoryPage() {
   const { categoryId } = Route.useParams();
+  const { data: products = [], isLoading } = useProducts();
   
   // Filter products by the current category/tag
   const filteredProducts = products.filter(p => p.tags && p.tags.includes(categoryId.toLowerCase()));
@@ -45,7 +46,11 @@ function CategoryPage() {
             </h2>
           </div>
           
-          {filteredProducts.length === 0 ? (
+          {isLoading ? (
+            <div className="py-24 text-center">
+              <p className="text-lg text-black/60">Loading products...</p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="py-24 text-center">
               <p className="text-lg text-black/60">No products found for this category.</p>
               <Link to="/" className="mt-8 inline-block rounded-full bg-black px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white">

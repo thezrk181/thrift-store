@@ -3,12 +3,12 @@ import { useState } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { getProduct, products } from "@/lib/products";
+import { fetchProductByIdOrSlug, useProducts } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
 
 export const Route = createFileRoute("/product/$id")({
-  head: ({ params }) => {
-    const p = getProduct(params.id);
+  head: ({ loaderData }) => {
+    const p = loaderData?.product;
     const title = p ? `${p.name} — Sole Wala` : "Product — Sole Wala";
     const desc = p?.description ?? "Considered footwear from Sole Wala.";
     return {
@@ -22,8 +22,8 @@ export const Route = createFileRoute("/product/$id")({
       ],
     };
   },
-  loader: ({ params }) => {
-    const product = getProduct(params.id);
+  loader: async ({ params }) => {
+    const product = await fetchProductByIdOrSlug(params.id);
     if (!product) throw notFound();
     return { product };
   },
@@ -42,13 +42,14 @@ export const Route = createFileRoute("/product/$id")({
 
 function ProductPage() {
   const { product } = Route.useLoaderData();
+  const { data: allProducts = [] } = useProducts();
   const { addItem } = useCart();
   const navigate = useNavigate();
   const [size, setSize] = useState<number | null>(null);
   const [color, setColor] = useState(product.colors[0].name);
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  const related = products.filter((p) => p.id !== product.id).slice(0, 4);
+
 
   const handleAdd = () => {
     if (!size) {
@@ -183,10 +184,13 @@ function ProductPage() {
               Shop all
             </Link>
           </div>
-          <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
-            {related.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
+          <div className="mt-8 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+            {allProducts
+              .filter((p) => p.id !== product.id)
+              .slice(0, 4)
+              .map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
           </div>
         </section>
       </div>

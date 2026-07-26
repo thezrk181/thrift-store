@@ -1,11 +1,6 @@
-import shoe1 from "@/assets/shoe-1.jpg";
-import shoe2 from "@/assets/shoe-2.jpg";
-import shoe3 from "@/assets/shoe-3.jpg";
-import shoe4 from "@/assets/shoe-4.jpg";
-import shoe5 from "@/assets/shoe-5.jpg";
-import shoe6 from "@/assets/shoe-6.jpg";
-import shoe7 from "@/assets/shoe-7.jpg";
-import shoe8 from "@/assets/shoe-8.jpg";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "./supabase";
+import { getProductImageUrl } from "./image-service";
 
 export type Product = {
   id: string;
@@ -19,130 +14,99 @@ export type Product = {
   description: string;
 };
 
-const defaultSizes = [7, 7.5, 8, 8.5, 9, 9.5, 10, 10.5, 11, 12];
+// Internal helper to map database shape to our frontend Product shape
+function transformProduct(p: any): Product {
+  const primaryImage =
+    p.product_images?.find((img: any) => img.is_primary)?.image_path ||
+    p.product_images?.[0]?.image_path;
 
-export const products: Product[] = [
-  {
-    id: "supernova-rise-2",
-    name: "Supernova Rise 2",
-    price: 33600,
-    image: shoe1,
-    sizes: defaultSizes,
-    colors: [
-      { name: "White / Blue", hex: "#e6ecf5" },
-      { name: "Black", hex: "#111111" },
-      { name: "Cream", hex: "#e9e4d8" },
-    ],
-    category: "Running",
-    tags: ["men", "new"],
-    description:
-      "A daily trainer built for effortless miles. Energy return foam, breathable mesh upper, and a sculpted midsole for the long haul.",
-  },
-  {
-    id: "adizero-adios-4",
-    name: "Adizero Adios Pro 4",
-    price: 67200,
-    image: shoe2,
-    sizes: defaultSizes,
-    colors: [
-      { name: "Chalk", hex: "#efece4" },
-      { name: "Ink", hex: "#1a1a1a" },
-    ],
-    category: "Racing",
-    tags: ["men", "sale"],
-    description:
-      "Race-day weapon. Carbon-infused plate, ultra-light cushioning, and a locked-in fit for personal bests.",
-  },
-  {
-    id: "shift-fwd",
-    name: "Shift FWD Runner",
-    price: 40600,
-    image: shoe3,
-    sizes: defaultSizes,
-    colors: [
-      { name: "Slate / Lime", hex: "#5a6470" },
-      { name: "Storm", hex: "#3a3f47" },
-    ],
-    category: "Running",
-    tags: ["women", "new"],
-    description:
-      "Forward geometry. A responsive ride shaped for tempo runs and long weekend efforts.",
-  },
-  {
-    id: "campus-84",
-    name: "Campus 84",
-    price: 26600,
-    image: shoe4,
-    sizes: defaultSizes,
-    colors: [
-      { name: "Navy / Gum", hex: "#1e2a44" },
-      { name: "Black / Gum", hex: "#0e0e0e" },
-    ],
-    category: "Lifestyle",
-    tags: ["men", "women"],
-    description:
-      "A heritage silhouette pulled from the archive. Suede overlays, gum sole, everyday wear.",
-  },
-  {
-    id: "atlas-chunk",
-    name: "Atlas Chunk",
-    price: 44800,
-    image: shoe5,
-    sizes: defaultSizes,
-    colors: [
-      { name: "Sand", hex: "#c9b99a" },
-      { name: "Stone", hex: "#a8a196" },
-    ],
-    category: "Lifestyle",
-    tags: ["women"],
-    description:
-      "Oversized proportions, quiet color. A chunky silhouette that stays refined.",
-  },
-  {
-    id: "court-og",
-    name: "Court OG",
-    price: 23800,
-    image: shoe6,
-    sizes: defaultSizes,
-    colors: [
-      { name: "Olive", hex: "#5c6a3a" },
-      { name: "White", hex: "#f2f2f2" },
-    ],
-    category: "Lifestyle",
-    tags: ["men", "sale"],
-    description:
-      "A clean court shoe. Low profile, leather upper, everyday-simple.",
-  },
-  {
-    id: "phantom-black",
-    name: "Phantom Black",
-    price: 49000,
-    image: shoe7,
-    sizes: defaultSizes,
-    colors: [
-      { name: "Triple Black", hex: "#000000" },
-      { name: "Graphite", hex: "#2a2a2a" },
-    ],
-    category: "Performance",
-    tags: ["men"],
-    description:
-      "All-black tonal build. Engineered mesh, technical sole unit, no distractions.",
-  },
-  {
-    id: "solar-orange",
-    name: "Solar Orange",
-    price: 37800,
-    image: shoe8,
-    sizes: defaultSizes,
-    colors: [
-      { name: "Solar", hex: "#ff5a1f" },
-      { name: "Ember", hex: "#c94a1c" },
-    ],
-    category: "Running",
-    tags: ["women", "sale"],
-    description:
-      "Loud color, quiet ride. A bold statement built on a proven cushioning platform.",
-  },
-];
+  // Deduplicate sizes and sort them
+  const sizes = Array.from(
+    new Set(p.product_variants?.map((v: any) => parseFloat(v.size)))
+  ).sort((a: any, b: any) => a - b) as number[];
 
-export const getProduct = (id: string) => products.find((p) => p.id === id);
+  // Deduplicate colors
+  const colorsMap = new Map();
+  p.product_variants?.forEach((v: any) => {
+    if (!colorsMap.has(v.color_name)) {
+      colorsMap.set(v.color_name, { name: v.color_name, hex: v.color_hex });
+    }
+  });
+
+  return {
+    id: p.slug, // the old frontend expects the URL slug as the 'id' field
+    name: p.name,
+    price: Number(p.base_price),
+    image: getProductImageUrl(primaryImage),
+    sizes,
+    colors: Array.from(colorsMap.values()),
+    category: p.category,
+    tags: p.tags || [],
+    description: p.description || "",
+  };
+}
+
+export async function fetchProducts(): Promise<Product[]> {
+  const { data, error } = await supabase.from("products").select(`
+      *,
+      product_images ( image_path, is_primary ),
+      product_variants ( size, color_name, color_hex )
+    `);
+
+  if (error) {
+    console.error("Error fetching products:", error);
+    throw new Error(error.message);
+  }
+
+  return (data || []).map(transformProduct);
+}
+
+export async function fetchProductByIdOrSlug(
+  idOrSlug: string
+): Promise<Product | undefined> {
+  let { data, error } = await supabase
+    .from("products")
+    .select(
+      `
+      *,
+      product_images ( image_path, is_primary ),
+      product_variants ( size, color_name, color_hex )
+    `
+    )
+    .eq("slug", idOrSlug)
+    .maybeSingle();
+
+  if (!data) {
+    // Fallback just in case they pass the UUID
+    const res = await supabase
+      .from("products")
+      .select(
+        `
+        *,
+        product_images ( image_path, is_primary ),
+        product_variants ( size, color_name, color_hex )
+      `
+      )
+      .eq("id", idOrSlug)
+      .maybeSingle();
+    data = res.data;
+  }
+
+  if (!data) return undefined;
+  return transformProduct(data);
+}
+
+// React Query Hooks
+export function useProducts() {
+  return useQuery({
+    queryKey: ["products"],
+    queryFn: fetchProducts,
+  });
+}
+
+export function useProduct(slug: string) {
+  return useQuery({
+    queryKey: ["product", slug],
+    queryFn: () => fetchProductByIdOrSlug(slug),
+  });
+}

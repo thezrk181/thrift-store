@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
-import { products, type Product } from "./products";
+import { type Product, useProducts } from "./products";
 
 export type CartItem = {
   key: string; // productId + size + color
@@ -23,6 +23,7 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { data: products = [] } = useProducts();
   const [items, setItems] = useState<CartItem[]>([]);
 
   const value = useMemo<CartContextValue>(() => {
@@ -70,7 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       subtotal,
       getProductForItem,
     };
-  }, [items]);
+  }, [items, products]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

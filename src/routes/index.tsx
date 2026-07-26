@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
-import { products } from "@/lib/products";
+import { useProducts } from "@/lib/products";
 import heroImg from "@/assets/shoe-hero.jpg";
 import vibeImg from "@/assets/vibe.jpg";
 
@@ -17,10 +17,12 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Index,
+  component: HomePage,
 });
 
-function Index() {
+function HomePage() {
+  const { data: products = [], isLoading } = useProducts();
+
   return (
     <div className="min-h-screen bg-white text-black">
       <SiteNav theme="light" />
@@ -102,10 +104,12 @@ function Index() {
               craft — built to make a statement.
             </p>
           </div>
-          <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
+          <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+            {isLoading ? (
+              <p className="py-24 text-center col-span-full">Loading products...</p>
+            ) : (
+              products.map((p) => <ProductCard key={p.id} product={p} />)
+            )}
           </div>
         </div>
       </section>
