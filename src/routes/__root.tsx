@@ -122,7 +122,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1 }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 9999, pointerEvents: 'none' }}>
           <MagicRings
             color="#fc42ff"
             colorTwo="#42fcff"
@@ -140,8 +140,8 @@ function RootComponent() {
             ringGap={1.5}
             fadeIn={0.7}
             fadeOut={0.5}
-            followMouse={false}
-            mouseInfluence={0.2}
+            followMouse={true}
+            mouseInfluence={0.5}
             hoverScale={1.2}
             parallax={0.05}
             clickBurst={false}
