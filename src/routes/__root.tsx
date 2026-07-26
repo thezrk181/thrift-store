@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "../lib/cart-context";
-import GhostCursor from "../components/GhostCursor";
+import SplashCursor from "../components/SplashCursor";
 
 function NotFoundComponent() {
   return (
@@ -122,21 +122,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <CartProvider>
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 9999, pointerEvents: 'none' }}>
-          <GhostCursor
-            color="#B497CF"
-            brightness={1}
-            edgeIntensity={0}
-            trailLength={50}
-            inertia={0.5}
-            grainIntensity={0.05}
-            bloomStrength={0.1}
-            bloomRadius={1.0}
-            bloomThreshold={0.025}
-            fadeDelayMs={1000}
-            fadeDurationMs={1500}
-          />
-        </div>
+        <SplashCursor />
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </CartProvider>
