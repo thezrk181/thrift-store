@@ -143,62 +143,6 @@ export const products: Product[] = [
     description:
       "Loud color, quiet ride. A bold statement built on a proven cushioning platform.",
   },
-  {
-    id: "nike-air-max-97",
-    name: "Nike Air Max 97 Off-White",
-    price: 56000,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
-    sizes: defaultSizes,
-    colors: [
-      { name: "Red / White", hex: "#d01c1f" },
-    ],
-    category: "Lifestyle",
-    tags: ["men", "new"],
-    description:
-      "Iconic Air Max silhouette. Bold red finish, premium construction.",
-  },
-  {
-    id: "adidas-gazelle-blue",
-    name: "Adidas Gazelle",
-    price: 32200,
-    image: "https://images.unsplash.com/photo-1518002171953-a080ee817e1f",
-    sizes: defaultSizes,
-    colors: [
-      { name: "Blue", hex: "#2a628f" },
-    ],
-    category: "Lifestyle",
-    tags: ["men", "women"],
-    description:
-      "Classic suede Gazelle in striking blue. A timeless low-profile sneaker.",
-  },
-  {
-    id: "new-balance-990",
-    name: "New Balance 990v5",
-    price: 52000,
-    image: "https://images.unsplash.com/photo-1539185441755-769473a23570",
-    sizes: defaultSizes,
-    colors: [
-      { name: "Grey", hex: "#8c8c8c" },
-    ],
-    category: "Lifestyle",
-    tags: ["men", "women", "new"],
-    description:
-      "The quintessential dad shoe. Premium suede, unbeatable comfort, proudly chunky.",
-  },
-  {
-    id: "nike-air-jordan-1",
-    name: "Nike Air Jordan 1",
-    price: 61600,
-    image: "https://images.unsplash.com/photo-1552346154-21d32810baa3",
-    sizes: defaultSizes,
-    colors: [
-      { name: "Black / White", hex: "#111111" },
-    ],
-    category: "Basketball",
-    tags: ["men", "new", "sale"],
-    description:
-      "The one that started it all. High-top court classic with premium leather blocking.",
-  },
 ];
 
 export const getProduct = (id: string) => products.find((p) => p.id === id);
