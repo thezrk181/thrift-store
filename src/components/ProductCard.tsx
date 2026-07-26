@@ -24,7 +24,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="mt-4 flex items-start justify-between gap-4">
         <div>
           <h3 className="text-sm font-semibold">{product.name}</h3>
-          <p className="mt-1 text-sm text-black/60">${product.price}</p>
+          <p className="mt-1 text-sm text-black/60">Rs {product.price.toLocaleString()}</p>
         </div>
         <div className="flex gap-1.5 pt-1">
           {product.colors.slice(0, 3).map((c) => (

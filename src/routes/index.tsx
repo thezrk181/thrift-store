@@ -80,7 +80,7 @@ function Index() {
             <div><span className="font-black text-lg">120+</span><p className="text-black/50">Happy customers</p></div>
             <div><span className="font-black text-lg">4.9/5</span><p className="text-black/50">Avg. rating</p></div>
             <div><span className="font-black text-lg">08</span><p className="text-black/50">Silhouettes</p></div>
-            <div><span className="font-black text-lg">Free</span><p className="text-black/50">Shipping over $80</p></div>
+            <div><span className="font-black text-lg">Free</span><p className="text-black/50">Shipping over Rs 22,400</p></div>
           </div>
         </div>
       </section>

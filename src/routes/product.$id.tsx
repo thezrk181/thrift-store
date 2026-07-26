@@ -97,7 +97,7 @@ function ProductPage() {
             <h1 className="mt-4 text-5xl font-black uppercase leading-none tracking-tight md:text-6xl">
               {product.name}
             </h1>
-            <p className="mt-6 text-2xl font-semibold">${product.price}</p>
+            <p className="mt-6 text-2xl font-semibold">Rs {product.price.toLocaleString()}</p>
 
             <p className="mt-8 max-w-md text-black/60">{product.description}</p>
 
@@ -154,7 +154,7 @@ function ProductPage() {
                 onClick={handleAdd}
                 className="rounded-full bg-black py-5 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85"
               >
-                Add to cart · ${product.price}
+                Add to cart · Rs {product.price.toLocaleString()}
               </button>
               <button
                 onClick={handleBuyNow}

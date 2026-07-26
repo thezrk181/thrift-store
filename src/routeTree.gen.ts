@@ -14,7 +14,7 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
-
+import { Route as CategoryCategoryIdRouteImport } from './routes/category.$categoryId'
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -40,6 +40,11 @@ const ProductIdRoute = ProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoryCategoryIdRoute = CategoryCategoryIdRouteImport.update({
+  id: '/category/$categoryId',
+  path: '/category/$categoryId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/product/$id': typeof ProductIdRoute
+  '/category/$categoryId': typeof CategoryCategoryIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/product/$id': typeof ProductIdRoute
+  '/category/$categoryId': typeof CategoryCategoryIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +69,14 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/product/$id': typeof ProductIdRoute
+  '/category/$categoryId': typeof CategoryCategoryIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cart' | '/signin' | '/signup' | '/product/$id'
+  fullPaths: '/' | '/cart' | '/signin' | '/signup' | '/product/$id' | '/category/$categoryId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cart' | '/signin' | '/signup' | '/product/$id'
-  id: '__root__' | '/' | '/cart' | '/signin' | '/signup' | '/product/$id'
+  to: '/' | '/cart' | '/signin' | '/signup' | '/product/$id' | '/category/$categoryId'
+  id: '__root__' | '/' | '/cart' | '/signin' | '/signup' | '/product/$id' | '/category/$categoryId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +85,7 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
   ProductIdRoute: typeof ProductIdRoute
+  CategoryCategoryIdRoute: typeof CategoryCategoryIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/category/$categoryId': {
+      id: '/category/$categoryId'
+      path: '/category/$categoryId'
+      fullPath: '/category/$categoryId'
+      preLoaderRoute: typeof CategoryCategoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +141,7 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
   ProductIdRoute: ProductIdRoute,
+  CategoryCategoryIdRoute: CategoryCategoryIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

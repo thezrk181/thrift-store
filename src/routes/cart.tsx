@@ -18,7 +18,7 @@ export const Route = createFileRoute("/cart")({
 
 function CartPage() {
   const { items, getProductForItem, updateQuantity, removeItem, subtotal, clear, count } = useCart();
-  const shipping = subtotal > 80 || subtotal === 0 ? 0 : 12;
+  const shipping = subtotal > 22400 || subtotal === 0 ? 0 : 3360;
   const total = subtotal + shipping;
 
   return (
@@ -67,7 +67,7 @@ function CartPage() {
                               Size {item.size} · {item.color}
                             </p>
                           </div>
-                          <p className="text-lg font-semibold">${product.price * item.quantity}</p>
+                          <p className="text-lg font-semibold">Rs {(product.price * item.quantity).toLocaleString()}</p>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="inline-flex items-center border border-black/15">
@@ -115,15 +115,15 @@ function CartPage() {
                 <dl className="mt-8 space-y-3 text-sm">
                   <div className="flex justify-between">
                     <dt className="text-white/60">Subtotal</dt>
-                    <dd>${subtotal.toFixed(2)}</dd>
+                    <dd>Rs {subtotal.toLocaleString()}</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-white/60">Shipping</dt>
-                    <dd>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</dd>
+                    <dd>{shipping === 0 ? "Free" : `Rs ${shipping.toLocaleString()}`}</dd>
                   </div>
                   <div className="flex justify-between border-t border-white/15 pt-3">
                     <dt>Total</dt>
-                    <dd className="text-lg font-semibold">${total.toFixed(2)}</dd>
+                    <dd className="text-lg font-semibold">Rs {total.toLocaleString()}</dd>
                   </div>
                 </dl>
                 <button

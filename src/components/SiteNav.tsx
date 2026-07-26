@@ -19,10 +19,10 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
           <Link to="/" className={linkCls} activeOptions={{ exact: true }} activeProps={{ className: isDark ? "text-white" : "text-black" }}>
             Shop
           </Link>
-          <a href="#new" className={linkCls}>New</a>
-          <a href="#men" className={linkCls}>Men</a>
-          <a href="#women" className={linkCls}>Women</a>
-          <a href="#sale" className={linkCls}>Sale</a>
+          <Link to="/category/$categoryId" params={{ categoryId: "new" }} className={linkCls} activeProps={{ className: isDark ? "text-white" : "text-black" }}>New</Link>
+          <Link to="/category/$categoryId" params={{ categoryId: "men" }} className={linkCls} activeProps={{ className: isDark ? "text-white" : "text-black" }}>Men</Link>
+          <Link to="/category/$categoryId" params={{ categoryId: "women" }} className={linkCls} activeProps={{ className: isDark ? "text-white" : "text-black" }}>Women</Link>
+          <Link to="/category/$categoryId" params={{ categoryId: "sale" }} className={linkCls} activeProps={{ className: isDark ? "text-white" : "text-black" }}>Sale</Link>
         </nav>
         <div className="flex items-center gap-6 text-sm">
           <Link to="/signin" className={`hidden uppercase tracking-wider md:inline ${linkCls}`}>
