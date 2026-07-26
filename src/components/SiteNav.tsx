@@ -13,7 +13,7 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
     <header className={`sticky top-0 z-50 border-b ${base}`}>
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-5">
         <Link to="/" className="text-lg font-black tracking-tight uppercase">
-          Stride/Form
+          Sole Wala
         </Link>
         <nav className="hidden gap-10 text-sm font-medium uppercase tracking-wider md:flex">
           <Link to="/" className={linkCls} activeOptions={{ exact: true }} activeProps={{ className: isDark ? "text-white" : "text-black" }}>

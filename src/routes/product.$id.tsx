@@ -9,8 +9,8 @@ import { useCart } from "@/lib/cart-context";
 export const Route = createFileRoute("/product/$id")({
   head: ({ params }) => {
     const p = getProduct(params.id);
-    const title = p ? `${p.name} — Stride/Form` : "Product — Stride/Form";
-    const desc = p?.description ?? "Considered footwear from Stride/Form.";
+    const title = p ? `${p.name} — Sole Wala` : "Product — Sole Wala";
+    const desc = p?.description ?? "Considered footwear from Sole Wala.";
     return {
       meta: [
         { title },

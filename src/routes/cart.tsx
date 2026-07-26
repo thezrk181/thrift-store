@@ -6,10 +6,10 @@ import { useCart } from "@/lib/cart-context";
 export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
-      { title: "Your Cart — Stride/Form" },
+      { title: "Your Cart — Sole Wala" },
       { name: "description", content: "Review the items in your cart and proceed to checkout." },
-      { property: "og:title", content: "Your Cart — Stride/Form" },
-      { property: "og:description", content: "Review your Stride/Form selection." },
+      { property: "og:title", content: "Your Cart — Sole Wala" },
+      { property: "og:description", content: "Review your Sole Wala selection." },
       { name: "robots", content: "noindex" },
     ],
   }),

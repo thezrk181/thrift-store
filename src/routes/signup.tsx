@@ -4,10 +4,10 @@ import { useState, type FormEvent } from "react";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Create Account — Stride/Form" },
-      { name: "description", content: "Create your Stride/Form account for early access and order history." },
-      { property: "og:title", content: "Create Account — Stride/Form" },
-      { property: "og:description", content: "Create your Stride/Form account." },
+      { title: "Create Account — Sole Wala" },
+      { name: "description", content: "Create your Sole Wala account for early access and order history." },
+      { property: "og:title", content: "Create Account — Sole Wala" },
+      { property: "og:description", content: "Create your Sole Wala account." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -32,7 +32,7 @@ function SignUpPage() {
       <div className="flex flex-col items-center justify-center bg-white px-8 py-16 md:order-1">
         <div className="w-full max-w-sm">
           <Link to="/" className="mb-12 block text-lg font-black uppercase tracking-tight md:hidden">
-            Stride/Form
+            Sole Wala
           </Link>
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/50">Account</p>
           <h2 className="mt-3 text-4xl font-black uppercase tracking-tight">Create Account</h2>
@@ -90,7 +90,7 @@ function SignUpPage() {
       </div>
 
       <div className="hidden bg-black text-white md:flex md:flex-col md:justify-between md:p-12">
-        <Link to="/" className="text-lg font-black uppercase tracking-tight">Stride/Form</Link>
+        <Link to="/" className="text-lg font-black uppercase tracking-tight">Sole Wala</Link>
         <div>
           <h1 className="text-6xl font-black uppercase leading-[0.9] tracking-tight">
             Join the
@@ -101,7 +101,7 @@ function SignUpPage() {
             Members get first look at every drop, saved sizes across devices, and free returns.
           </p>
         </div>
-        <p className="text-xs uppercase tracking-widest text-white/40">© 2026 Stride/Form</p>
+        <p className="text-xs uppercase tracking-widest text-white/40">© 2026 Sole Wala</p>
       </div>
     </div>
   );

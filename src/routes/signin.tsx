@@ -4,10 +4,10 @@ import { useState, type FormEvent } from "react";
 export const Route = createFileRoute("/signin")({
   head: () => ({
     meta: [
-      { title: "Sign In — Stride/Form" },
-      { name: "description", content: "Sign in to your Stride/Form account." },
-      { property: "og:title", content: "Sign In — Stride/Form" },
-      { property: "og:description", content: "Sign in to your Stride/Form account." },
+      { title: "Sign In — Sole Wala" },
+      { name: "description", content: "Sign in to your Sole Wala account." },
+      { property: "og:title", content: "Sign In — Sole Wala" },
+      { property: "og:description", content: "Sign in to your Sole Wala account." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -29,7 +29,7 @@ function SignInPage() {
   return (
     <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
       <div className="hidden bg-black text-white md:flex md:flex-col md:justify-between md:p-12">
-        <Link to="/" className="text-lg font-black uppercase tracking-tight">Stride/Form</Link>
+        <Link to="/" className="text-lg font-black uppercase tracking-tight">Sole Wala</Link>
         <div>
           <h1 className="text-6xl font-black uppercase leading-[0.9] tracking-tight">
             Welcome
@@ -42,13 +42,13 @@ function SignInPage() {
             Sign in to see your orders, saved sizes, and early access to new drops.
           </p>
         </div>
-        <p className="text-xs uppercase tracking-widest text-white/40">© 2026 Stride/Form</p>
+        <p className="text-xs uppercase tracking-widest text-white/40">© 2026 Sole Wala</p>
       </div>
 
       <div className="flex flex-col items-center justify-center bg-white px-8 py-16">
         <div className="w-full max-w-sm">
           <Link to="/" className="mb-12 block text-lg font-black uppercase tracking-tight md:hidden">
-            Stride/Form
+            Sole Wala
           </Link>
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/50">Account</p>
           <h2 className="mt-3 text-4xl font-black uppercase tracking-tight">Sign in</h2>

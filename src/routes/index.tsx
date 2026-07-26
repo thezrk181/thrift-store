@@ -9,9 +9,9 @@ import vibeImg from "@/assets/vibe.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stride/Form — Considered Footwear, Built to Move" },
+      { title: "Sole Wala — Considered Footwear, Built to Move" },
       { name: "description", content: "Editorial-grade sneakers for daily runs, city miles, and everything in between. Limited runs, sold direct." },
-      { property: "og:title", content: "Stride/Form — Considered Footwear" },
+      { property: "og:title", content: "Sole Wala — Considered Footwear" },
       { property: "og:description", content: "Editorial-grade sneakers for daily runs and city miles. Limited runs, sold direct." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -7,7 +7,7 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-4">
           <div className="md:col-span-2">
             <h3 className="text-4xl font-black uppercase tracking-tight leading-none">
-              Stride/Form
+              Sole Wala
               <br />
               <span className="text-black/40">Est. 2024</span>
             </h3>
@@ -34,7 +34,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-16 flex flex-col justify-between gap-4 border-t border-black/10 pt-8 text-xs text-black/40 md:flex-row">
-          <p>© 2026 Stride/Form. All rights reserved.</p>
+          <p>© 2026 Sole Wala. All rights reserved.</p>
           <p className="uppercase tracking-widest">Made for the pavement.</p>
         </div>
       </div>
