@@ -147,7 +147,7 @@ export const products: Product[] = [
     id: "nike-air-max-97",
     name: "Nike Air Max 97 Off-White",
     price: 56000,
-    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
     sizes: defaultSizes,
     colors: [
       { name: "Red / White", hex: "#d01c1f" },
@@ -161,7 +161,7 @@ export const products: Product[] = [
     id: "adidas-gazelle-blue",
     name: "Adidas Gazelle",
     price: 32200,
-    image: "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1518002171953-a080ee817e1f",
     sizes: defaultSizes,
     colors: [
       { name: "Blue", hex: "#2a628f" },
@@ -175,7 +175,7 @@ export const products: Product[] = [
     id: "new-balance-990",
     name: "New Balance 990v5",
     price: 52000,
-    image: "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1539185441755-769473a23570",
     sizes: defaultSizes,
     colors: [
       { name: "Grey", hex: "#8c8c8c" },
@@ -189,7 +189,7 @@ export const products: Product[] = [
     id: "nike-air-jordan-1",
     name: "Nike Air Jordan 1",
     price: 61600,
-    image: "https://images.unsplash.com/photo-1552346154-21d32810baa3?auto=format&fit=crop&q=80",
+    image: "https://images.unsplash.com/photo-1552346154-21d32810baa3",
     sizes: defaultSizes,
     colors: [
       { name: "Black / White", hex: "#111111" },
