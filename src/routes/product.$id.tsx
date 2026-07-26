@@ -107,7 +107,7 @@ function ProductPage() {
                 <p className="text-xs text-black/60">{color}</p>
               </div>
               <div className="flex gap-3">
-                {product.colors.map((c) => {
+                {product.colors.map((c: { name: string; hex: string }) => {
                   const active = c.name === color;
                   return (
                     <button
@@ -130,7 +130,7 @@ function ProductPage() {
                 <button className="text-xs text-black/60 underline">Size guide</button>
               </div>
               <div className="grid grid-cols-5 gap-2">
-                {product.sizes.map((s) => {
+                {product.sizes.map((s: number) => {
                   const active = s === size;
                   return (
                     <button
