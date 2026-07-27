@@ -16,9 +16,11 @@ CREATE TABLE IF NOT EXISTS public.promo_codes (
 
 ALTER TABLE public.promo_codes ENABLE ROW LEVEL SECURITY;
 -- Everyone can read active promo codes (to validate at checkout)
+DROP POLICY IF EXISTS "Public can view active promo codes" ON public.promo_codes;
 CREATE POLICY "Public can view active promo codes" ON public.promo_codes 
   FOR SELECT USING (is_active = true);
 -- Admins have full access
+DROP POLICY IF EXISTS "Admins have full access to promo codes" ON public.promo_codes;
 CREATE POLICY "Admins have full access to promo codes" ON public.promo_codes 
   FOR ALL USING (public.is_admin(auth.uid()));
 
@@ -37,9 +39,11 @@ CREATE TABLE IF NOT EXISTS public.carts (
 
 ALTER TABLE public.carts ENABLE ROW LEVEL SECURITY;
 -- Users can manage their own cart
+DROP POLICY IF EXISTS "Users can manage own cart" ON public.carts;
 CREATE POLICY "Users can manage own cart" ON public.carts 
   FOR ALL USING (auth.uid() = user_id);
 -- Admins can view all carts
+DROP POLICY IF EXISTS "Admins can view all carts" ON public.carts;
 CREATE POLICY "Admins can view all carts" ON public.carts 
   FOR SELECT USING (public.is_admin(auth.uid()));
 
@@ -55,6 +59,7 @@ CREATE TABLE IF NOT EXISTS public.email_logs (
 );
 
 ALTER TABLE public.email_logs ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Admins can view email logs" ON public.email_logs;
 CREATE POLICY "Admins can view email logs" ON public.email_logs 
   FOR SELECT USING (public.is_admin(auth.uid()));
 
