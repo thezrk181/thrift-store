@@ -9,20 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as SigninRouteImport } from './routes/signin'
-import { Route as CartRouteImport } from './routes/cart'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as CategoryCategoryIdRouteImport } from './routes/category.$categoryId'
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
+import { Route as ProductIdRouteImport } from './routes/product.$id'
+
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -30,19 +26,24 @@ const CartRoute = CartRouteImport.update({
   path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProductIdRoute = ProductIdRouteImport.update({
-  id: '/product/$id',
-  path: '/product/$id',
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoryCategoryIdRoute = CategoryCategoryIdRouteImport.update({
   id: '/category/$categoryId',
   path: '/category/$categoryId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductIdRoute = ProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -51,16 +52,16 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/product/$id': typeof ProductIdRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
+  '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/product/$id': typeof ProductIdRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
+  '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,15 +69,34 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
-  '/product/$id': typeof ProductIdRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
+  '/product/$id': typeof ProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cart' | '/signin' | '/signup' | '/product/$id' | '/category/$categoryId'
+  fullPaths:
+    | '/'
+    | '/cart'
+    | '/signin'
+    | '/signup'
+    | '/category/$categoryId'
+    | '/product/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cart' | '/signin' | '/signup' | '/product/$id' | '/category/$categoryId'
-  id: '__root__' | '/' | '/cart' | '/signin' | '/signup' | '/product/$id' | '/category/$categoryId'
+  to:
+    | '/'
+    | '/cart'
+    | '/signin'
+    | '/signup'
+    | '/category/$categoryId'
+    | '/product/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/cart'
+    | '/signin'
+    | '/signup'
+    | '/category/$categoryId'
+    | '/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -84,24 +104,17 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
-  ProductIdRoute: typeof ProductIdRoute
   CategoryCategoryIdRoute: typeof CategoryCategoryIdRoute
+  ProductIdRoute: typeof ProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -111,18 +124,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/product/$id': {
-      id: '/product/$id'
-      path: '/product/$id'
-      fullPath: '/product/$id'
-      preLoaderRoute: typeof ProductIdRouteImport
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/category/$categoryId': {
@@ -130,6 +143,13 @@ declare module '@tanstack/react-router' {
       path: '/category/$categoryId'
       fullPath: '/category/$categoryId'
       preLoaderRoute: typeof CategoryCategoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/$id': {
+      id: '/product/$id'
+      path: '/product/$id'
+      fullPath: '/product/$id'
+      preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -140,9 +160,19 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
-  ProductIdRoute: ProductIdRoute,
   CategoryCategoryIdRoute: CategoryCategoryIdRoute,
+  ProductIdRoute: ProductIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
