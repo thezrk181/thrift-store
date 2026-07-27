@@ -18,7 +18,8 @@ export const Route = createFileRoute("/cart")({
 });
 
 function CartPage() {
-  const { items, getProductForItem, updateQuantity, removeItem, subtotal, clear, count } = useCart();
+  const { items, getProductForItem, updateQuantity, removeItem, subtotal, clear, count } =
+    useCart();
   const shipping = subtotal > 22400 || subtotal === 0 ? 0 : 3360;
   const total = subtotal + shipping;
 
@@ -29,13 +30,18 @@ function CartPage() {
       <div className="mx-auto max-w-[1400px] px-8 py-16">
         <div className="mb-12 flex items-end justify-between">
           <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">Your Bag</h1>
-          <p className="text-sm text-black/60">{count} {count === 1 ? "item" : "items"}</p>
+          <p className="text-sm text-black/60">
+            {count} {count === 1 ? "item" : "items"}
+          </p>
         </div>
 
         {items.length === 0 ? (
           <div className="border-t border-black/10 py-24 text-center">
             <p className="text-lg text-black/60">Your bag is empty.</p>
-            <Link to="/" className="mt-8 inline-block rounded-full bg-black px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white">
+            <Link
+              to="/"
+              className="mt-8 inline-block rounded-full bg-black px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white"
+            >
               Start shopping
             </Link>
           </div>
@@ -48,7 +54,11 @@ function CartPage() {
                   if (!product) return null;
                   return (
                     <li key={item.key} className="flex gap-6 py-8">
-                      <Link to="/product/$id" params={{ id: product.id }} className="block w-32 flex-shrink-0 bg-[#f3f2ef] md:w-40">
+                      <Link
+                        to="/product/$id"
+                        params={{ id: product.id }}
+                        className="block w-32 flex-shrink-0 bg-[#f3f2ef] md:w-40"
+                      >
                         <img
                           src={product.image}
                           alt={product.name}
@@ -61,14 +71,20 @@ function CartPage() {
                       <div className="flex flex-1 flex-col justify-between">
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <Link to="/product/$id" params={{ id: product.id }} className="text-lg font-semibold hover:underline">
+                            <Link
+                              to="/product/$id"
+                              params={{ id: product.id }}
+                              className="text-lg font-semibold hover:underline"
+                            >
                               {product.name}
                             </Link>
                             <p className="mt-1 text-xs uppercase tracking-widest text-black/50">
                               Size {item.size} · {item.color}
                             </p>
                           </div>
-                          <p className="text-lg font-semibold">Rs {(product.price * item.quantity).toLocaleString()}</p>
+                          <p className="text-lg font-semibold">
+                            Rs {(product.price * item.quantity).toLocaleString()}
+                          </p>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="inline-flex items-center border border-black/15">
@@ -104,7 +120,10 @@ function CartPage() {
                 <Link to="/" className="uppercase tracking-widest underline underline-offset-4">
                   ← Continue shopping
                 </Link>
-                <button onClick={clear} className="uppercase tracking-widest text-black/50 hover:text-black">
+                <button
+                  onClick={clear}
+                  className="uppercase tracking-widest text-black/50 hover:text-black"
+                >
                   Clear bag
                 </button>
               </div>
@@ -121,7 +140,7 @@ function CartPage() {
                   <span className="text-zinc-400 font-medium">Shipping</span>
                   <span className="font-semibold text-lg">Rs 250</span>
                 </div>
-                
+
                 <div className="border-t border-white/15 my-4 pt-4 flex justify-between items-center text-lg">
                   <span className="font-bold">Total</span>
                   <span className="font-black text-xl">Rs {(subtotal + 250).toLocaleString()}</span>

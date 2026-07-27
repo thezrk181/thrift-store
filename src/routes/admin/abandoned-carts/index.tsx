@@ -13,20 +13,20 @@ function AdminAbandonedCarts() {
     queryFn: async () => {
       // Fetch carts using the secure RPC function to get user emails
       const { data, error } = await supabase.rpc("get_admin_carts");
-      
+
       if (error) throw error;
-      
+
       // Filter out empty carts and format
       return (data || [])
         .filter((cart: any) => cart.items && Array.isArray(cart.items) && cart.items.length > 0)
         .map((cart: any) => ({
           ...cart,
-          user_name: cart.first_name 
-            ? `${cart.first_name} ${cart.last_name || ''}`.trim() 
-            : 'Unknown User',
-          email: cart.email
+          user_name: cart.first_name
+            ? `${cart.first_name} ${cart.last_name || ""}`.trim()
+            : "Unknown User",
+          email: cart.email,
         }));
-    }
+    },
   });
 
   if (isLoading) return <div>Loading abandoned carts...</div>;
@@ -39,8 +39,9 @@ function AdminAbandonedCarts() {
 
       <div className="mb-8 rounded-xl bg-blue-50 p-6 border border-blue-100">
         <p className="text-sm text-blue-800">
-          This page shows active shopping carts for logged-in users. Carts that haven't been checked out yet appear here. 
-          In the future, you can integrate automated emails to send these users a reminder or a discount code!
+          This page shows active shopping carts for logged-in users. Carts that haven't been checked
+          out yet appear here. In the future, you can integrate automated emails to send these users
+          a reminder or a discount code!
         </p>
       </div>
 
@@ -56,11 +57,16 @@ function AdminAbandonedCarts() {
           </thead>
           <tbody className="divide-y divide-zinc-200">
             {carts.length === 0 ? (
-              <tr><td colSpan={4} className="p-8 text-center text-zinc-500">No abandoned carts found.</td></tr>
+              <tr>
+                <td colSpan={4} className="p-8 text-center text-zinc-500">
+                  No abandoned carts found.
+                </td>
+              </tr>
             ) : (
               carts.map((cart: any) => {
-                const isAbandoned = new Date(cart.updated_at).getTime() < Date.now() - 24 * 60 * 60 * 1000;
-                
+                const isAbandoned =
+                  new Date(cart.updated_at).getTime() < Date.now() - 24 * 60 * 60 * 1000;
+
                 return (
                   <tr key={cart.id} className="hover:bg-zinc-50">
                     <td className="px-6 py-4">
@@ -82,7 +88,10 @@ function AdminAbandonedCarts() {
                       )}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <a href={`mailto:${cart.email}`} className="text-xs font-bold uppercase text-blue-600 hover:underline">
+                      <a
+                        href={`mailto:${cart.email}`}
+                        className="text-xs font-bold uppercase text-blue-600 hover:underline"
+                      >
                         Email User
                       </a>
                     </td>

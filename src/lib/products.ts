@@ -15,6 +15,7 @@ export type Product = {
   condition?: string;
   tags: string[];
   description: string;
+  is_featured?: boolean;
 };
 
 // Internal helper to map database shape to our frontend Product shape
@@ -24,9 +25,9 @@ function transformProduct(p: any): Product {
     p.product_images?.[0]?.image_path;
 
   // Deduplicate sizes and sort them
-  const sizes = Array.from(
-    new Set(p.product_variants?.map((v: any) => parseFloat(v.size)))
-  ).sort((a: any, b: any) => a - b) as number[];
+  const sizes = Array.from(new Set(p.product_variants?.map((v: any) => parseFloat(v.size)))).sort(
+    (a: any, b: any) => a - b,
+  ) as number[];
 
   // Deduplicate colors
   const colorsMap = new Map();
@@ -37,12 +38,13 @@ function transformProduct(p: any): Product {
   });
 
   // Expose the raw variants to match for cart ID
-  const variants = p.product_variants?.map((v: any) => ({
-    id: v.id,
-    size: parseFloat(v.size),
-    color: v.color_name,
-    stock_quantity: v.stock_quantity || 0,
-  })) || [];
+  const variants =
+    p.product_variants?.map((v: any) => ({
+      id: v.id,
+      size: parseFloat(v.size),
+      color: v.color_name,
+      stock_quantity: v.stock_quantity || 0,
+    })) || [];
 
   return {
     id: p.slug, // the old frontend expects the URL slug as the 'id' field
@@ -57,6 +59,7 @@ function transformProduct(p: any): Product {
     condition: p.condition || "Good",
     tags: p.tags || [],
     description: p.description || "",
+    is_featured: p.is_featured || false,
   };
 }
 
@@ -75,9 +78,7 @@ export async function fetchProducts(): Promise<Product[]> {
   return (data || []).map(transformProduct);
 }
 
-export async function fetchProductByIdOrSlug(
-  idOrSlug: string
-): Promise<Product | undefined> {
+export async function fetchProductByIdOrSlug(idOrSlug: string): Promise<Product | undefined> {
   let { data, error } = await supabase
     .from("products")
     .select(
@@ -85,7 +86,7 @@ export async function fetchProductByIdOrSlug(
       *,
       product_images ( image_path, is_primary ),
       product_variants ( id, size, color_name, color_hex, stock_quantity )
-    `
+    `,
     )
     .eq("slug", idOrSlug)
     .maybeSingle();
@@ -99,7 +100,7 @@ export async function fetchProductByIdOrSlug(
         *,
         product_images ( image_path, is_primary ),
         product_variants ( id, size, color_name, color_hex, stock_quantity )
-      `
+      `,
       )
       .eq("id", idOrSlug)
       .maybeSingle();
@@ -130,7 +131,7 @@ export async function placeOrder(
   userId: string | null,
   shippingAddress: any,
   totalAmount: number,
-  items: { variant_id: string; quantity: number; price_at_time: number }[]
+  items: { variant_id: string; quantity: number; price_at_time: number }[],
 ) {
   const { data, error } = await supabase.rpc("place_order_with_inventory", {
     p_user_id: userId,

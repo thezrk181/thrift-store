@@ -15,12 +15,12 @@ export const Route = createFileRoute("/signup")({
 function SignUpPage() {
   const navigate = useNavigate();
   const { session } = useAuth();
-  
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);

@@ -49,7 +49,7 @@ function ShopPage() {
       // Category Match
       if (selectedCategories.length > 0) {
         const matchesCat = selectedCategories.some(
-          (c) => p.category.toLowerCase() === c.toLowerCase() || p.tags.includes(c.toLowerCase())
+          (c) => p.category.toLowerCase() === c.toLowerCase() || p.tags.includes(c.toLowerCase()),
         );
         if (!matchesCat) return false;
       }
@@ -97,9 +97,7 @@ function ShopPage() {
       {/* HEADER */}
       <section className="bg-[#f3f2ef] pt-24 pb-16">
         <div className="mx-auto max-w-[1400px] px-8 text-center">
-          <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">
-            Shop All
-          </h1>
+          <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">Shop All</h1>
         </div>
       </section>
 
@@ -134,7 +132,9 @@ function ShopPage() {
             <div className="space-y-12 pr-6 pb-20 md:pb-0">
               {/* Category */}
               <div>
-                <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Category</h3>
+                <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">
+                  Category
+                </h3>
                 <div className="flex flex-col gap-2">
                   {availableCategories.map((cat) => (
                     <button
@@ -147,7 +147,9 @@ function ShopPage() {
                       }`}
                     >
                       <span>{cat}</span>
-                      <span className={`inline-block h-2 w-2 rounded-full transition-transform ${selectedCategories.includes(cat) ? "bg-white scale-100" : "bg-black/20 scale-0 group-hover:scale-100"}`} />
+                      <span
+                        className={`inline-block h-2 w-2 rounded-full transition-transform ${selectedCategories.includes(cat) ? "bg-white scale-100" : "bg-black/20 scale-0 group-hover:scale-100"}`}
+                      />
                     </button>
                   ))}
                 </div>
@@ -156,7 +158,9 @@ function ShopPage() {
               {/* Size */}
               {availableSizes.length > 0 && (
                 <div>
-                  <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Size (US)</h3>
+                  <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">
+                    Size (US)
+                  </h3>
                   <div className="grid grid-cols-3 gap-2">
                     {availableSizes.map((size) => (
                       <button
@@ -178,7 +182,9 @@ function ShopPage() {
               {/* Color */}
               {availableColors.length > 0 && (
                 <div>
-                  <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Color</h3>
+                  <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">
+                    Color
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     {availableColors.map((color) => (
                       <button
@@ -203,7 +209,9 @@ function ShopPage() {
 
               {/* Condition */}
               <div>
-                <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Condition</h3>
+                <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">
+                  Condition
+                </h3>
                 <div className="flex flex-col gap-2">
                   {availableConditions.map((cond) => (
                     <button
@@ -224,9 +232,16 @@ function ShopPage() {
               {/* Price Range */}
               <div>
                 <div className="mb-4 flex items-center justify-between">
-                  <h3 className="text-xs font-black uppercase tracking-widest text-black/50">Max Price</h3>
+                  <h3 className="text-xs font-black uppercase tracking-widest text-black/50">
+                    Max Price
+                  </h3>
                   {maxPrice !== null && (
-                    <button onClick={() => setMaxPrice(null)} className="text-xs font-bold uppercase underline text-black/60 hover:text-black">Reset</button>
+                    <button
+                      onClick={() => setMaxPrice(null)}
+                      className="text-xs font-bold uppercase underline text-black/60 hover:text-black"
+                    >
+                      Reset
+                    </button>
                   )}
                 </div>
                 <div className="relative pt-2">

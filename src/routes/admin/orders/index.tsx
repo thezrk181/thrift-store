@@ -16,7 +16,8 @@ function AdminOrdersList() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select(`
+        .select(
+          `
           *,
           profiles ( first_name, last_name, phone ),
           order_items (
@@ -28,24 +29,22 @@ function AdminOrdersList() {
               products ( name )
             )
           )
-        `)
+        `,
+        )
         .order("created_at", { ascending: false });
-      
+
       if (error) throw error;
       return data || [];
-    }
+    },
   });
 
   const updateStatus = async (orderId: string, newStatus: string) => {
-    const { error } = await supabase
-      .from("orders")
-      .update({ status: newStatus })
-      .eq("id", orderId);
-      
+    const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", orderId);
+
     if (!error) {
       // Optimistically update cache
-      queryClient.setQueryData(["admin-orders"], (old: any[]) => 
-        old.map(o => o.id === orderId ? { ...o, status: newStatus } : o)
+      queryClient.setQueryData(["admin-orders"], (old: any[]) =>
+        old.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)),
       );
     } else {
       alert("Error updating status: " + error.message);
@@ -81,37 +80,41 @@ function AdminOrdersList() {
               </tr>
             ) : (
               orders.map((order) => (
-                <tr 
-                  key={order.id} 
+                <tr
+                  key={order.id}
                   className="hover:bg-zinc-50 cursor-pointer group"
                   onClick={(e) => {
                     // Prevent navigation if clicking on select dropdown
-                    if ((e.target as HTMLElement).tagName.toLowerCase() !== 'select') {
+                    if ((e.target as HTMLElement).tagName.toLowerCase() !== "select") {
                       navigate({ to: `/admin/orders/${order.id}` });
                     }
                   }}
                 >
                   <td className="px-6 py-4">
                     <div className="font-mono text-xs font-bold text-zinc-900 group-hover:text-black transition-colors">
-                      {order.id.split('-')[0]}...
+                      {order.id.split("-")[0]}...
                     </div>
-                    <div className="mt-1 text-xs text-zinc-500">{new Date(order.created_at).toLocaleDateString()}</div>
+                    <div className="mt-1 text-xs text-zinc-500">
+                      {new Date(order.created_at).toLocaleDateString()}
+                    </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="font-bold text-zinc-900">
-                      {order.profiles ? `${order.profiles.first_name} ${order.profiles.last_name}` : "Guest User"}
+                      {order.profiles
+                        ? `${order.profiles.first_name} ${order.profiles.last_name}`
+                        : "Guest User"}
                     </div>
-                    {order.profiles?.phone && (
-                      <div className="text-xs">{order.profiles.phone}</div>
-                    )}
-                    <div className="mt-1 text-xs">{order.shipping_address?.city}, {order.shipping_address?.postal_code}</div>
+                    {order.profiles?.phone && <div className="text-xs">{order.profiles.phone}</div>}
+                    <div className="mt-1 text-xs">
+                      {order.shipping_address?.city}, {order.shipping_address?.postal_code}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-xs">
                     <ul className="list-disc pl-4">
                       {order.order_items?.map((item: any, i: number) => (
                         <li key={i}>
-                          {item.quantity}x {item.product_variants?.products?.name} 
-                          ({item.product_variants?.color_name}, Size {item.product_variants?.size})
+                          {item.quantity}x {item.product_variants?.products?.name}(
+                          {item.product_variants?.color_name}, Size {item.product_variants?.size})
                         </li>
                       ))}
                     </ul>
@@ -124,11 +127,15 @@ function AdminOrdersList() {
                       value={order.status}
                       onChange={(e) => updateStatus(order.id, e.target.value)}
                       className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider outline-none ${
-                        order.status === "pending" ? "bg-yellow-100 text-yellow-800" :
-                        order.status === "paid" ? "bg-blue-100 text-blue-800" :
-                        order.status === "shipped" ? "bg-purple-100 text-purple-800" :
-                        order.status === "delivered" ? "bg-green-100 text-green-800" :
-                        "bg-red-100 text-red-800"
+                        order.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.status === "paid"
+                            ? "bg-blue-100 text-blue-800"
+                            : order.status === "shipped"
+                              ? "bg-purple-100 text-purple-800"
+                              : order.status === "delivered"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
                       }`}
                     >
                       <option value="pending">Pending</option>
@@ -139,8 +146,9 @@ function AdminOrdersList() {
                     </select>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Link 
-                      to={`/admin/orders/${order.id}`}
+                    <Link
+                      to="/admin/orders/$id"
+                      params={{ id: order.id }}
                       className="text-xs font-bold text-zinc-400 hover:text-black transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >

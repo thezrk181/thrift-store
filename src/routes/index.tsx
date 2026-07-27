@@ -5,15 +5,24 @@ import { ProductCard } from "@/components/ProductCard";
 import { useProducts } from "@/lib/products";
 import heroImg from "@/assets/shoe-hero.jpg";
 import vibeImg from "@/assets/vibe.jpg";
+// @ts-ignore
 import LiquidEther from "@/components/LiquidEther";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Sole Wala — Considered Footwear, Built to Move" },
-      { name: "description", content: "Editorial-grade sneakers for daily runs, city miles, and everything in between. Limited runs, sold direct." },
+      {
+        name: "description",
+        content:
+          "Editorial-grade sneakers for daily runs, city miles, and everything in between. Limited runs, sold direct.",
+      },
       { property: "og:title", content: "Sole Wala — Considered Footwear" },
-      { property: "og:description", content: "Editorial-grade sneakers for daily runs and city miles. Limited runs, sold direct." },
+      {
+        property: "og:description",
+        content:
+          "Editorial-grade sneakers for daily runs and city miles. Limited runs, sold direct.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -25,10 +34,8 @@ function HomePage() {
   const { data: products = [], isLoading } = useProducts();
 
   // Show featured products on the homepage. If none are featured, fallback to latest.
-  const featuredProducts = products.filter(p => p.is_featured);
-  const displayProducts = featuredProducts.length > 0 
-    ? featuredProducts 
-    : products.slice(0, 8);
+  const featuredProducts = products.filter((p: any) => p.is_featured);
+  const displayProducts = featuredProducts.length > 0 ? featuredProducts : products.slice(0, 8);
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -57,8 +64,8 @@ function HomePage() {
               <span className="italic font-serif font-normal">long haul.</span>
             </h1>
             <p className="mt-8 max-w-md text-base text-black/60">
-              A footwear studio making considered runners in small batches.
-              Materials that last, silhouettes that don't shout.
+              A footwear studio making considered runners in small batches. Materials that last,
+              silhouettes that don't shout.
             </p>
             <div className="mt-10 flex items-center gap-4">
               <Link
@@ -66,7 +73,9 @@ function HomePage() {
                 className="inline-flex items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85"
               >
                 Shop the drop
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-black">↗</span>
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-black">
+                  ↗
+                </span>
               </Link>
               <Link
                 to="/product/$id"
@@ -94,10 +103,22 @@ function HomePage() {
         </div>
         <div className="relative z-10 border-t border-black/10">
           <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-8 px-8 py-6 text-sm md:grid-cols-4">
-            <div><span className="font-black text-lg">120+</span><p className="text-black/50">Happy customers</p></div>
-            <div><span className="font-black text-lg">4.9/5</span><p className="text-black/50">Avg. rating</p></div>
-            <div><span className="font-black text-lg">08</span><p className="text-black/50">Silhouettes</p></div>
-            <div><span className="font-black text-lg">Free</span><p className="text-black/50">Shipping over Rs 22,400</p></div>
+            <div>
+              <span className="font-black text-lg">120+</span>
+              <p className="text-black/50">Happy customers</p>
+            </div>
+            <div>
+              <span className="font-black text-lg">4.9/5</span>
+              <p className="text-black/50">Avg. rating</p>
+            </div>
+            <div>
+              <span className="font-black text-lg">08</span>
+              <p className="text-black/50">Silhouettes</p>
+            </div>
+            <div>
+              <span className="font-black text-lg">Free</span>
+              <p className="text-black/50">Shipping over Rs 22,400</p>
+            </div>
           </div>
         </div>
       </section>
@@ -115,23 +136,21 @@ function HomePage() {
               </h2>
             </div>
             <p className="hidden max-w-sm text-sm text-black/60 md:block">
-              Bold design, pushing boundaries. Each pair combines innovation, comfort and
-              craft — built to make a statement.
+              Bold design, pushing boundaries. Each pair combines innovation, comfort and craft —
+              built to make a statement.
             </p>
           </div>
           <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {isLoading ? (
               <p className="py-24 text-center col-span-full">Loading products...</p>
             ) : (
-              displayProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))
+              displayProducts.map((product) => <ProductCard key={product.id} product={product} />)
             )}
           </div>
-          
+
           {products.length > 0 && (
             <div className="mt-16 text-center">
-              <Link 
+              <Link
                 to="/shop"
                 className="inline-block rounded-full border border-black/10 px-8 py-4 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:border-black hover:bg-black hover:text-white"
               >
@@ -159,8 +178,8 @@ function HomePage() {
               who move.
             </h2>
             <p className="mt-8 max-w-md text-white/60">
-              We make one thing. Really well. Every silhouette is prototyped in-house,
-              tested on real feet, released in numbered batches. When they're gone, they're gone.
+              We make one thing. Really well. Every silhouette is prototyped in-house, tested on
+              real feet, released in numbered batches. When they're gone, they're gone.
             </p>
           </div>
           <div className="relative aspect-[4/5] overflow-hidden">

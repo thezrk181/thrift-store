@@ -25,13 +25,14 @@ function OrderSuccessPage() {
         <div className="mx-auto w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-8">
           <CheckCircle2 className="w-10 h-10" />
         </div>
-        
+
         <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4">
           Order Confirmed
         </h1>
-        
+
         <p className="text-zinc-500 text-lg mb-8">
-          Thank you for shopping with us! We've received your order and will begin processing it right away.
+          Thank you for shopping with us! We've received your order and will begin processing it
+          right away.
         </p>
 
         {orderNumber && (
@@ -41,7 +42,9 @@ function OrderSuccessPage() {
                 <Package className="w-5 h-5" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Order Number</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                  Order Number
+                </p>
                 <p className="font-mono text-xl font-bold text-black">{orderNumber}</p>
               </div>
             </div>

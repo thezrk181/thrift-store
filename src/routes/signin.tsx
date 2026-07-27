@@ -50,9 +50,7 @@ function SignInPage() {
 
       <main className="flex flex-1 items-center justify-center px-8 py-20">
         <div className="w-full max-w-md">
-          <h1 className="mb-8 text-center text-4xl font-black uppercase tracking-tight">
-            Sign In
-          </h1>
+          <h1 className="mb-8 text-center text-4xl font-black uppercase tracking-tight">Sign In</h1>
 
           <form onSubmit={handleSignIn} className="space-y-6">
             {error && (

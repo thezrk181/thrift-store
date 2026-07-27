@@ -17,9 +17,11 @@ export const Route = createFileRoute("/category/$categoryId")({
 function CategoryPage() {
   const { categoryId } = Route.useParams();
   const { data: products = [], isLoading } = useProducts();
-  
+
   // Filter products by the current category/tag
-  const filteredProducts = products.filter(p => p.tags && p.tags.includes(categoryId.toLowerCase()));
+  const filteredProducts = products.filter(
+    (p) => p.tags && p.tags.includes(categoryId.toLowerCase()),
+  );
 
   return (
     <div className="min-h-screen bg-white text-black">
@@ -31,9 +33,7 @@ function CategoryPage() {
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-black/50">
             Category
           </p>
-          <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">
-            {categoryId}
-          </h1>
+          <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">{categoryId}</h1>
         </div>
       </section>
 
@@ -45,7 +45,7 @@ function CategoryPage() {
               {filteredProducts.length} Results
             </h2>
           </div>
-          
+
           {isLoading ? (
             <div className="py-24 text-center">
               <p className="text-lg text-black/60">Loading products...</p>
@@ -53,7 +53,10 @@ function CategoryPage() {
           ) : filteredProducts.length === 0 ? (
             <div className="py-24 text-center">
               <p className="text-lg text-black/60">No products found for this category.</p>
-              <Link to="/" className="mt-8 inline-block rounded-full bg-black px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white">
+              <Link
+                to="/"
+                className="mt-8 inline-block rounded-full bg-black px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white"
+              >
                 Back to Shop
               </Link>
             </div>

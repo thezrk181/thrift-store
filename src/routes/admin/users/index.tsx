@@ -16,28 +16,34 @@ function AdminUsersList() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select(`
+        .select(
+          `
           *,
           orders ( id, total_amount )
-        `)
+        `,
+        )
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       return data || [];
-    }
+    },
   });
 
   const toggleAdmin = async (userId: string, currentStatus: boolean) => {
-    if (window.confirm(`Are you sure you want to ${currentStatus ? 'revoke' : 'grant'} admin access for this user?`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to ${currentStatus ? "revoke" : "grant"} admin access for this user?`,
+      )
+    ) {
       const { error } = await supabase
         .from("profiles")
         .update({ is_admin: !currentStatus })
         .eq("id", userId);
-        
+
       if (!error) {
         // Optimistically update cache
         queryClient.setQueryData(["admin-users"], (old: any[]) =>
-          old.map(u => u.id === userId ? { ...u, is_admin: !currentStatus } : u)
+          old.map((u) => (u.id === userId ? { ...u, is_admin: !currentStatus } : u)),
         );
       } else {
         alert("Error updating admin status: " + error.message);
@@ -74,20 +80,24 @@ function AdminUsersList() {
             ) : (
               users.map((user) => {
                 const totalOrders = user.orders?.length || 0;
-                const totalSpent = user.orders?.reduce((acc: number, order: any) => acc + Number(order.total_amount), 0) || 0;
+                const totalSpent =
+                  user.orders?.reduce(
+                    (acc: number, order: any) => acc + Number(order.total_amount),
+                    0,
+                  ) || 0;
 
                 return (
                   <tr key={user.id} className="hover:bg-zinc-50">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-zinc-900">{user.first_name} {user.last_name}</div>
-                      <div className="text-xs text-zinc-500 font-mono mt-1">{user.id.split('-')[0]}...</div>
+                      <div className="font-bold text-zinc-900">
+                        {user.first_name} {user.last_name}
+                      </div>
+                      <div className="text-xs text-zinc-500 font-mono mt-1">
+                        {user.id.split("-")[0]}...
+                      </div>
                     </td>
-                    <td className="px-6 py-4">
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 font-medium text-zinc-900">
-                      {totalOrders}
-                    </td>
+                    <td className="px-6 py-4">{new Date(user.created_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 font-medium text-zinc-900">{totalOrders}</td>
                     <td className="px-6 py-4 font-medium text-zinc-900">
                       Rs {totalSpent.toLocaleString()}
                     </td>
@@ -95,15 +105,19 @@ function AdminUsersList() {
                       <button
                         onClick={() => toggleAdmin(user.id, user.is_admin)}
                         className={`flex items-center justify-end gap-1 w-full rounded p-2 text-xs font-bold uppercase transition-colors ${
-                          user.is_admin 
-                            ? "text-red-600 hover:bg-red-50" 
+                          user.is_admin
+                            ? "text-red-600 hover:bg-red-50"
                             : "text-zinc-400 hover:bg-zinc-100 hover:text-zinc-900"
                         }`}
                       >
                         {user.is_admin ? (
-                          <><ShieldAlert className="h-4 w-4" /> Revoke</>
+                          <>
+                            <ShieldAlert className="h-4 w-4" /> Revoke
+                          </>
                         ) : (
-                          <><Shield className="h-4 w-4" /> Grant</>
+                          <>
+                            <Shield className="h-4 w-4" /> Grant
+                          </>
                         )}
                       </button>
                     </td>

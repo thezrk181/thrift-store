@@ -17,10 +17,10 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isDark = theme === "dark";
-  const base = isDark ? "bg-black text-white border-white/10" : "bg-white text-black border-black/10";
-  const linkCls = isDark
-    ? "text-white/70 hover:text-white"
-    : "text-black/60 hover:text-black";
+  const base = isDark
+    ? "bg-black text-white border-white/10"
+    : "bg-white text-black border-black/10";
+  const linkCls = isDark ? "text-white/70 hover:text-white" : "text-black/60 hover:text-black";
 
   // Close search when clicking outside
   useEffect(() => {
@@ -34,40 +34,71 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   }, []);
 
   // Filter products for quick results
-  const searchResults = searchQuery.trim() === "" 
-    ? [] 
-    : products.filter((p) => {
-        const q = searchQuery.toLowerCase();
-        return (
-          p.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.toLowerCase().includes(q))
-        );
-      }).slice(0, 4);
+  const searchResults =
+    searchQuery.trim() === ""
+      ? []
+      : products
+          .filter((p) => {
+            const q = searchQuery.toLowerCase();
+            return (
+              p.name.toLowerCase().includes(q) ||
+              p.category.toLowerCase().includes(q) ||
+              p.tags.some((t) => t.toLowerCase().includes(q))
+            );
+          })
+          .slice(0, 4);
 
   return (
     <header className={`sticky top-0 z-50 border-b ${base}`}>
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-5">
         <div className="flex items-center gap-4">
-          <button 
+          <button
             className={`md:hidden ${linkCls}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
-          <Link to="/" className="text-lg font-black tracking-tight uppercase" onClick={() => setIsMobileMenuOpen(false)}>
+          <Link
+            to="/"
+            className="text-lg font-black tracking-tight uppercase"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
             Sole Wala
           </Link>
         </div>
         <nav className="hidden gap-10 text-sm font-medium uppercase tracking-wider md:flex">
-          <Link to="/" className={linkCls} activeOptions={{ exact: true }} activeProps={{ className: isDark ? "text-white" : "text-black" }}>
+          <Link
+            to="/"
+            className={linkCls}
+            activeOptions={{ exact: true }}
+            activeProps={{ className: isDark ? "text-white" : "text-black" }}
+          >
             Home
           </Link>
-          <Link to="/shop" className={linkCls} activeOptions={{ exact: true }} activeProps={{ className: isDark ? "text-white" : "text-black" }}>
+          <Link
+            to="/shop"
+            className={linkCls}
+            activeOptions={{ exact: true }}
+            activeProps={{ className: isDark ? "text-white" : "text-black" }}
+          >
             Shop
           </Link>
-          <Link to="/category/$categoryId" params={{ categoryId: "new" }} className={linkCls} activeProps={{ className: isDark ? "text-white" : "text-black" }}>New</Link>
-          <Link to="/category/$categoryId" params={{ categoryId: "sale" }} className={linkCls} activeProps={{ className: isDark ? "text-white" : "text-black" }}>Sale</Link>
+          <Link
+            to="/category/$categoryId"
+            params={{ categoryId: "new" }}
+            className={linkCls}
+            activeProps={{ className: isDark ? "text-white" : "text-black" }}
+          >
+            New
+          </Link>
+          <Link
+            to="/category/$categoryId"
+            params={{ categoryId: "sale" }}
+            className={linkCls}
+            activeProps={{ className: isDark ? "text-white" : "text-black" }}
+          >
+            Sale
+          </Link>
         </nav>
         <div className="flex items-center gap-6 text-sm relative" ref={searchRef}>
           {/* SEARCH TRIGGER / INPUT */}
@@ -84,11 +115,13 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`w-full bg-transparent border-b outline-none pb-1 text-sm ${
-                  isDark ? "border-white/20 text-white placeholder:text-white/40 focus:border-white" : "border-black/20 text-black placeholder:text-black/40 focus:border-black"
+                  isDark
+                    ? "border-white/20 text-white placeholder:text-white/40 focus:border-white"
+                    : "border-black/20 text-black placeholder:text-black/40 focus:border-black"
                 }`}
               />
             </div>
-            <button 
+            <button
               onClick={() => {
                 if (isSearchOpen) {
                   setIsSearchOpen(false);
@@ -102,10 +135,12 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
             >
               {isSearchOpen ? <X size={20} /> : <Search size={20} />}
             </button>
-            
+
             {/* INLINE SEARCH DROPDOWN */}
             {isSearchOpen && searchQuery.trim() !== "" && (
-              <div className={`absolute top-full right-0 mt-4 w-72 rounded-lg shadow-xl border overflow-hidden ${isDark ? "bg-[#1a1a1a] border-white/10" : "bg-white border-black/10"}`}>
+              <div
+                className={`absolute top-full right-0 mt-4 w-72 rounded-lg shadow-xl border overflow-hidden ${isDark ? "bg-[#1a1a1a] border-white/10" : "bg-white border-black/10"}`}
+              >
                 {searchResults.length === 0 ? (
                   <div className="p-4 text-center text-sm opacity-60">No results found.</div>
                 ) : (
@@ -121,10 +156,18 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
                         }}
                         className={`flex items-center gap-3 p-3 transition-colors ${isDark ? "hover:bg-white/5" : "hover:bg-black/5"}`}
                       >
-                        <img src={product.image} alt={product.name} className="h-10 w-10 rounded bg-[#f3f2ef] object-cover mix-blend-multiply" />
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="h-10 w-10 rounded bg-[#f3f2ef] object-cover mix-blend-multiply"
+                        />
                         <div>
-                          <div className="text-sm font-bold uppercase tracking-tight">{product.name}</div>
-                          <div className={`text-xs ${isDark ? "text-white/60" : "text-black/60"}`}>Rs {product.price.toLocaleString()}</div>
+                          <div className="text-sm font-bold uppercase tracking-tight">
+                            {product.name}
+                          </div>
+                          <div className={`text-xs ${isDark ? "text-white/60" : "text-black/60"}`}>
+                            Rs {product.price.toLocaleString()}
+                          </div>
                         </div>
                       </Link>
                     ))}
@@ -146,14 +189,24 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
           {session ? (
             <>
               {isAdmin && (
-                <Link to="/admin" className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`} title="Admin Panel">
+                <Link
+                  to="/admin"
+                  className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}
+                  title="Admin Panel"
+                >
                   <Shield size={20} />
                 </Link>
               )}
-              <Link to="/wishlist" className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}>
+              <Link
+                to="/wishlist"
+                className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}
+              >
                 <Heart size={20} />
               </Link>
-              <Link to="/profile" className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}>
+              <Link
+                to="/profile"
+                className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}
+              >
                 <User size={20} />
               </Link>
             </>
@@ -180,15 +233,37 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
 
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className={`md:hidden absolute top-full left-0 w-full border-b shadow-lg ${isDark ? "bg-black border-white/10" : "bg-white border-black/10"}`}>
+        <div
+          className={`md:hidden absolute top-full left-0 w-full border-b shadow-lg ${isDark ? "bg-black border-white/10" : "bg-white border-black/10"}`}
+        >
           <nav className="flex flex-col p-6 font-bold uppercase tracking-wider text-sm space-y-6">
-            <Link to="/" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-            <Link to="/shop" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
-            <Link to="/category/$categoryId" params={{ categoryId: "new" }} className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>New Arrivals</Link>
-            <Link to="/category/$categoryId" params={{ categoryId: "sale" }} className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
+            <Link to="/" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>
+              Home
+            </Link>
+            <Link to="/shop" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>
+              Shop
+            </Link>
+            <Link
+              to="/category/$categoryId"
+              params={{ categoryId: "new" }}
+              className={linkCls}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              New Arrivals
+            </Link>
+            <Link
+              to="/category/$categoryId"
+              params={{ categoryId: "sale" }}
+              className={linkCls}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Sale
+            </Link>
             {!session && (
               <div className="pt-4 border-t border-black/10 dark:border-white/10">
-                <Link to="/signin" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
+                <Link to="/signin" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>
+                  Sign In
+                </Link>
               </div>
             )}
           </nav>

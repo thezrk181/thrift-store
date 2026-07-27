@@ -26,10 +26,7 @@ function AdminProductsList() {
       }
 
       // Then delete the product (cascade will handle variants and image rows)
-      const { error } = await supabase
-        .from("products")
-        .delete()
-        .eq("id", product.db_id);
+      const { error } = await supabase.from("products").delete().eq("id", product.db_id);
 
       if (error) {
         alert("Error deleting product: " + error.message);
@@ -88,7 +85,9 @@ function AdminProductsList() {
                     </div>
                   </td>
                   <td className="px-6 py-4 uppercase tracking-wider">{product.category}</td>
-                  <td className="px-6 py-4 font-medium text-zinc-900">Rs {product.price.toLocaleString()}</td>
+                  <td className="px-6 py-4 font-medium text-zinc-900">
+                    Rs {product.price.toLocaleString()}
+                  </td>
                   <td className="px-6 py-4">{product.condition}</td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">

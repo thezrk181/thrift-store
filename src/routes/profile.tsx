@@ -15,7 +15,7 @@ export const Route = createFileRoute("/profile")({
 function ProfilePage() {
   const navigate = useNavigate();
   const { session, profile: authProfile, isAdmin, signOut } = useAuth();
-  
+
   const [activeTab, setActiveTab] = useState<"orders" | "address">("orders");
   const [profile, setProfile] = useState<any>(null);
   const [orders, setOrders] = useState<any[]>([]);
@@ -46,7 +46,7 @@ function ProfilePage() {
         .select("*")
         .eq("id", session?.user.id)
         .single();
-      
+
       if (profileData) {
         setProfile(profileData);
         if (profileData.saved_address) {
@@ -104,14 +104,12 @@ function ProfilePage() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-8 py-16">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-16 border-b border-black/10 pb-8">
           <div>
-            <h1 className="text-4xl font-black uppercase tracking-tight">
-              My Account
-            </h1>
+            <h1 className="text-4xl font-black uppercase tracking-tight">My Account</h1>
             <p className="mt-2 text-sm text-black/60">
               Welcome back, {profile?.first_name || "User"}
             </p>
           </div>
-          
+
           <div className="flex items-center gap-4">
             {isAdmin && (
               <Link
@@ -157,21 +155,34 @@ function ProfilePage() {
                 ) : (
                   <div className="space-y-6">
                     {orders.map((order) => (
-                      <div key={order.id} className="rounded-xl border border-black/10 bg-white p-6 shadow-sm">
+                      <div
+                        key={order.id}
+                        className="rounded-xl border border-black/10 bg-white p-6 shadow-sm"
+                      >
                         <div className="mb-4 flex items-center justify-between border-b border-black/5 pb-4">
                           <div>
-                            <p className="text-xs font-bold uppercase tracking-widest text-black/50">Order Date</p>
-                            <p className="text-sm font-medium mt-1">{new Date(order.created_at).toLocaleDateString()}</p>
+                            <p className="text-xs font-bold uppercase tracking-widest text-black/50">
+                              Order Date
+                            </p>
+                            <p className="text-sm font-medium mt-1">
+                              {new Date(order.created_at).toLocaleDateString()}
+                            </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs font-bold uppercase tracking-widest text-black/50">Status</p>
+                            <p className="text-xs font-bold uppercase tracking-widest text-black/50">
+                              Status
+                            </p>
                             <p className="text-sm font-bold uppercase tracking-wider mt-1">
                               {order.status}
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-xs font-bold uppercase tracking-widest text-black/50">Total</p>
-                            <p className="text-sm font-medium mt-1">Rs {order.total_amount.toLocaleString()}</p>
+                            <p className="text-xs font-bold uppercase tracking-widest text-black/50">
+                              Total
+                            </p>
+                            <p className="text-sm font-medium mt-1">
+                              Rs {order.total_amount.toLocaleString()}
+                            </p>
                           </div>
                         </div>
                         <div className="space-y-3">
@@ -180,7 +191,9 @@ function ProfilePage() {
                               <span className="text-black/80">
                                 {item.quantity}x Variant ID: {item.product_variant_id}
                               </span>
-                              <span className="font-semibold">Rs {item.price_at_time.toLocaleString()}</span>
+                              <span className="font-semibold">
+                                Rs {item.price_at_time.toLocaleString()}
+                              </span>
                             </div>
                           ))}
                         </div>
@@ -197,14 +210,18 @@ function ProfilePage() {
                 <div className="rounded-xl border border-black/10 bg-white p-8 shadow-sm">
                   <form onSubmit={handleSaveAddress} className="space-y-6">
                     {message && (
-                      <div className={`rounded p-4 text-sm font-bold ${message.includes("success") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+                      <div
+                        className={`rounded p-4 text-sm font-bold ${message.includes("success") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
+                      >
                         {message}
                       </div>
                     )}
-                    
+
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">First Name</label>
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                          First Name
+                        </label>
                         <input
                           type="text"
                           required
@@ -214,7 +231,9 @@ function ProfilePage() {
                         />
                       </div>
                       <div>
-                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">Last Name</label>
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                          Last Name
+                        </label>
                         <input
                           type="text"
                           required
@@ -226,7 +245,9 @@ function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">Street Address</label>
+                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                        Street Address
+                      </label>
                       <input
                         type="text"
                         required
@@ -238,7 +259,9 @@ function ProfilePage() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">City</label>
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                          City
+                        </label>
                         <input
                           type="text"
                           required
@@ -248,7 +271,9 @@ function ProfilePage() {
                         />
                       </div>
                       <div>
-                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">Postal Code</label>
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                          Postal Code
+                        </label>
                         <input
                           type="text"
                           required
@@ -260,7 +285,9 @@ function ProfilePage() {
                     </div>
 
                     <div>
-                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">Phone</label>
+                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                        Phone
+                      </label>
                       <input
                         type="tel"
                         required

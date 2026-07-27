@@ -34,22 +34,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // Sync to database if logged in
   useEffect(() => {
     if (!session?.user?.id) return;
-    
+
     // Using a simple debounce/timeout to avoid spamming the DB on every single click
     const timer = setTimeout(async () => {
-      await supabase.from("carts").upsert({
-        user_id: session.user.id,
-        items: items,
-        updated_at: new Date().toISOString()
-      }, { onConflict: "user_id" });
+      await supabase.from("carts").upsert(
+        {
+          user_id: session.user.id,
+          items: items,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "user_id" },
+      );
     }, 1000);
 
     return () => clearTimeout(timer);
   }, [items, session]);
 
   const value = useMemo<CartContextValue>(() => {
-    const getProductForItem = (item: CartItem) =>
-      products.find((p) => p.id === item.productId);
+    const getProductForItem = (item: CartItem) => products.find((p) => p.id === item.productId);
 
     const addItem = (productId: string, size: number, color: string, quantity = 1) => {
       const p = products.find((p) => p.id === productId);
@@ -70,8 +72,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       });
     };
 
-    const removeItem = (key: string) =>
-      setItems((prev) => prev.filter((i) => i.key !== key));
+    const removeItem = (key: string) => setItems((prev) => prev.filter((i) => i.key !== key));
 
     const updateQuantity = (key: string, quantity: number) =>
       setItems((prev) => {

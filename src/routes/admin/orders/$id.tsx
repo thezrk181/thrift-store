@@ -19,7 +19,8 @@ function OrderDetailsPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
-        .select(`
+        .select(
+          `
           *,
           profiles ( first_name, last_name, phone ),
           order_items (
@@ -35,22 +36,20 @@ function OrderDetailsPage() {
               )
             )
           )
-        `)
+        `,
+        )
         .eq("id", id)
         .single();
-      
+
       if (error) throw error;
       return data;
-    }
+    },
   });
 
   const updateStatus = async (newStatus: string) => {
     setIsUpdating(true);
-    const { error } = await supabase
-      .from("orders")
-      .update({ status: newStatus })
-      .eq("id", id);
-      
+    const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", id);
+
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ["admin-order", id] });
       queryClient.invalidateQueries({ queryKey: ["admin-orders"] });
@@ -73,28 +72,32 @@ function OrderDetailsPage() {
     paid: "bg-blue-100 text-blue-800 border-blue-200",
     shipped: "bg-purple-100 text-purple-800 border-purple-200",
     delivered: "bg-green-100 text-green-800 border-green-200",
-    cancelled: "bg-red-100 text-red-800 border-red-200"
+    cancelled: "bg-red-100 text-red-800 border-red-200",
   };
 
   return (
     <div className="max-w-5xl mx-auto pb-12">
       {/* Header */}
       <div className="mb-8 flex items-center gap-4">
-        <Link 
-          to="/admin/orders" 
+        <Link
+          to="/admin/orders"
           className="flex h-10 w-10 items-center justify-center rounded-full bg-white border border-zinc-200 text-zinc-500 transition-colors hover:bg-zinc-50 hover:text-zinc-900"
         >
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-black uppercase tracking-tight">Order #{order.id.split('-')[0]}</h1>
-            <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border ${statusColors[order.status] || "bg-zinc-100 text-zinc-800 border-zinc-200"}`}>
+            <h1 className="text-2xl font-black uppercase tracking-tight">
+              Order #{order.id.split("-")[0]}
+            </h1>
+            <span
+              className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border ${statusColors[order.status] || "bg-zinc-100 text-zinc-800 border-zinc-200"}`}
+            >
               {order.status}
             </span>
           </div>
           <p className="text-sm text-zinc-500 mt-1 flex items-center gap-1">
-            <Clock className="h-4 w-4" /> 
+            <Clock className="h-4 w-4" />
             {new Date(order.created_at).toLocaleString()}
           </p>
         </div>
@@ -113,15 +116,16 @@ function OrderDetailsPage() {
                 const variant = item.product_variants;
                 const product = variant?.products;
                 const images = product?.product_images || [];
-                const primaryImage = images.find((img: any) => img.is_primary)?.image_path || images[0]?.image_path;
+                const primaryImage =
+                  images.find((img: any) => img.is_primary)?.image_path || images[0]?.image_path;
 
                 return (
                   <div key={item.id} className="flex p-4 gap-4">
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
                       {primaryImage ? (
-                        <img 
-                          src={getProductImageUrl(primaryImage)} 
-                          alt={product?.name} 
+                        <img
+                          src={getProductImageUrl(primaryImage)}
+                          alt={product?.name}
                           className="h-full w-full object-cover"
                         />
                       ) : (
@@ -132,14 +136,20 @@ function OrderDetailsPage() {
                     </div>
                     <div className="flex flex-1 flex-col justify-between">
                       <div>
-                        <h3 className="font-bold text-zinc-900">{product?.name || "Unknown Product"}</h3>
+                        <h3 className="font-bold text-zinc-900">
+                          {product?.name || "Unknown Product"}
+                        </h3>
                         <p className="text-sm text-zinc-500 mt-1">
                           {variant?.color_name} • Size {variant?.size}
                         </p>
                       </div>
                       <div className="flex items-center justify-between mt-4">
-                        <span className="text-sm font-medium text-zinc-500">Qty: {item.quantity}</span>
-                        <span className="font-bold text-zinc-900">Rs {Number(item.price_at_time).toLocaleString()}</span>
+                        <span className="text-sm font-medium text-zinc-500">
+                          Qty: {item.quantity}
+                        </span>
+                        <span className="font-bold text-zinc-900">
+                          Rs {Number(item.price_at_time).toLocaleString()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -149,7 +159,9 @@ function OrderDetailsPage() {
             <div className="border-t border-zinc-200 bg-zinc-50 p-4">
               <div className="flex justify-between items-center">
                 <span className="font-medium text-zinc-500">Total Amount</span>
-                <span className="text-xl font-black text-zinc-900">Rs {Number(order.total_amount).toLocaleString()}</span>
+                <span className="text-xl font-black text-zinc-900">
+                  Rs {Number(order.total_amount).toLocaleString()}
+                </span>
               </div>
             </div>
           </div>
@@ -182,14 +194,20 @@ function OrderDetailsPage() {
             </div>
             <div className="p-4 space-y-4 text-sm">
               <div>
-                <p className="font-medium text-zinc-500 text-xs uppercase tracking-wider mb-1">Name</p>
+                <p className="font-medium text-zinc-500 text-xs uppercase tracking-wider mb-1">
+                  Name
+                </p>
                 <p className="font-bold text-zinc-900">
-                  {order.profiles ? `${order.profiles.first_name} ${order.profiles.last_name}` : "Guest User"}
+                  {order.profiles
+                    ? `${order.profiles.first_name} ${order.profiles.last_name}`
+                    : "Guest User"}
                 </p>
               </div>
               {order.profiles?.phone && (
                 <div>
-                  <p className="font-medium text-zinc-500 text-xs uppercase tracking-wider mb-1">Phone</p>
+                  <p className="font-medium text-zinc-500 text-xs uppercase tracking-wider mb-1">
+                    Phone
+                  </p>
                   <p className="text-zinc-900">{order.profiles.phone}</p>
                 </div>
               )}
@@ -203,17 +221,22 @@ function OrderDetailsPage() {
               Shipping Address
             </div>
             <div className="p-4 text-sm">
-              <p className="font-bold text-zinc-900 mb-1">{order.shipping_address?.firstName} {order.shipping_address?.lastName}</p>
+              <p className="font-bold text-zinc-900 mb-1">
+                {order.shipping_address?.firstName} {order.shipping_address?.lastName}
+              </p>
               <p className="text-zinc-600 mb-1">{order.shipping_address?.street}</p>
               <p className="text-zinc-600">
                 {order.shipping_address?.city}, {order.shipping_address?.postalCode}
               </p>
               <p className="text-zinc-600 mt-2 flex items-center gap-1">
-                <span className="font-medium text-zinc-500 text-xs uppercase tracking-wider">Contact:</span> {order.shipping_address?.phone}
+                <span className="font-medium text-zinc-500 text-xs uppercase tracking-wider">
+                  Contact:
+                </span>{" "}
+                {order.shipping_address?.phone}
               </p>
             </div>
           </div>
-          
+
           {/* Payment Card */}
           <div className="rounded-xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
             <div className="border-b border-zinc-200 bg-zinc-50 p-4 font-bold text-zinc-900 flex items-center gap-2">
@@ -221,11 +244,17 @@ function OrderDetailsPage() {
               Payment Details
             </div>
             <div className="p-4 text-sm">
-              <p className="text-zinc-600 mb-1">Method: <span className="font-medium text-zinc-900">Cash on Delivery</span></p>
-              <p className="text-zinc-600">Total: <span className="font-bold text-zinc-900">Rs {Number(order.total_amount).toLocaleString()}</span></p>
+              <p className="text-zinc-600 mb-1">
+                Method: <span className="font-medium text-zinc-900">Cash on Delivery</span>
+              </p>
+              <p className="text-zinc-600">
+                Total:{" "}
+                <span className="font-bold text-zinc-900">
+                  Rs {Number(order.total_amount).toLocaleString()}
+                </span>
+              </p>
             </div>
           </div>
-
         </div>
       </div>
     </div>

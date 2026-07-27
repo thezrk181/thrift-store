@@ -11,13 +11,11 @@ export function SiteFooter() {
     e.preventDefault();
     if (!email) return;
     setStatus("loading");
-    
-    const { error } = await supabase
-      .from("newsletter_subscribers")
-      .insert({ email });
-      
+
+    const { error } = await supabase.from("newsletter_subscribers").insert({ email });
+
     if (error) {
-      if (error.code === '23505') {
+      if (error.code === "23505") {
         setMessage("You are already subscribed!");
         setStatus("success");
       } else {
@@ -58,7 +56,7 @@ export function SiteFooter() {
                   onChange={(e) => setEmail(e.target.value)}
                   className="flex-1 bg-[#f3f2ef] border border-transparent rounded-l-full px-4 py-3 text-sm outline-none focus:border-black transition-colors"
                 />
-                <button 
+                <button
                   type="submit"
                   disabled={status === "loading"}
                   className="bg-black text-white px-6 py-3 rounded-r-full text-xs font-bold uppercase tracking-wider hover:bg-black/80 transition-colors disabled:opacity-50"
@@ -67,27 +65,61 @@ export function SiteFooter() {
                 </button>
               </div>
               {message && (
-                <p className={`mt-2 text-xs font-medium ${status === "error" ? "text-red-500" : "text-green-600"}`}>
+                <p
+                  className={`mt-2 text-xs font-medium ${status === "error" ? "text-red-500" : "text-green-600"}`}
+                >
                   {message}
                 </p>
               )}
             </form>
           </div>
           <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-black/40">Shop</p>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-black/40">
+              Shop
+            </p>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/" className="hover:underline">All</Link></li>
-              <li><a href="#new" className="hover:underline">New Arrivals</a></li>
-              <li><a href="#men" className="hover:underline">Men</a></li>
-              <li><a href="#women" className="hover:underline">Women</a></li>
+              <li>
+                <Link to="/" className="hover:underline">
+                  All
+                </Link>
+              </li>
+              <li>
+                <a href="#new" className="hover:underline">
+                  New Arrivals
+                </a>
+              </li>
+              <li>
+                <a href="#men" className="hover:underline">
+                  Men
+                </a>
+              </li>
+              <li>
+                <a href="#women" className="hover:underline">
+                  Women
+                </a>
+              </li>
             </ul>
           </div>
           <div>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-black/40">Account</p>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-black/40">
+              Account
+            </p>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/signin" className="hover:underline">Sign In</Link></li>
-              <li><Link to="/signup" className="hover:underline">Create Account</Link></li>
-              <li><Link to="/cart" className="hover:underline">Cart</Link></li>
+              <li>
+                <Link to="/signin" className="hover:underline">
+                  Sign In
+                </Link>
+              </li>
+              <li>
+                <Link to="/signup" className="hover:underline">
+                  Create Account
+                </Link>
+              </li>
+              <li>
+                <Link to="/cart" className="hover:underline">
+                  Cart
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

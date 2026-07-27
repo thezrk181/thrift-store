@@ -26,11 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <Link
-      to="/product/$id"
-      params={{ id: product.id }}
-      className="group block"
-    >
+    <Link to="/product/$id" params={{ id: product.id }} className="group block">
       <div className="relative aspect-square overflow-hidden bg-[#f3f2ef]">
         <span className="absolute left-4 top-4 z-10 rotate-[-90deg] origin-top-left translate-y-[52px] bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
           New

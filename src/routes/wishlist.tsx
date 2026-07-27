@@ -32,8 +32,8 @@ function WishlistPage() {
   }
 
   // Filter products that are in the user's wishlist
-  const wishlistedProducts = allProducts.filter((product: Product) => 
-    wishlistIds.includes(product.db_id)
+  const wishlistedProducts = allProducts.filter((product: Product) =>
+    wishlistIds.includes(product.db_id),
   );
 
   return (
@@ -42,9 +42,7 @@ function WishlistPage() {
 
       <main className="mx-auto w-full max-w-[1400px] flex-1 px-8 py-16">
         <header className="mb-12">
-          <h1 className="text-4xl font-black uppercase tracking-tight">
-            My Wishlist
-          </h1>
+          <h1 className="text-4xl font-black uppercase tracking-tight">My Wishlist</h1>
           <p className="mt-2 text-sm text-black/60">
             {wishlistedProducts.length} {wishlistedProducts.length === 1 ? "item" : "items"} saved.
           </p>

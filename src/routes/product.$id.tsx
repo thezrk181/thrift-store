@@ -12,7 +12,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/product/$id")({
-  head: ({ loaderData }) => {
+  head: ({ loaderData }: any) => {
     const p = loaderData?.product;
     const title = p ? `${p.name} — Sole Wala` : "Product — Sole Wala";
     const desc = p?.description ?? "Considered footwear from Sole Wala.";
@@ -39,20 +39,25 @@ export const Route = createFileRoute("/product/$id")({
       <div className="mx-auto max-w-2xl px-8 py-32 text-center">
         <h1 className="text-4xl font-black uppercase">Not found</h1>
         <p className="mt-4 text-black/60">That style has walked off. Back to the shop.</p>
-        <Link to="/" className="mt-8 inline-block rounded-full bg-black px-6 py-3 text-sm font-semibold uppercase text-white">Shop</Link>
+        <Link
+          to="/"
+          className="mt-8 inline-block rounded-full bg-black px-6 py-3 text-sm font-semibold uppercase text-white"
+        >
+          Shop
+        </Link>
       </div>
     </div>
   ),
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as any;
   const { data: allProducts = [] } = useProducts();
   const { addItem } = useCart();
   const navigate = useNavigate();
   const { session } = useAuth();
   const queryClient = useQueryClient();
-  
+
   const { data: wishlist = [] } = useWishlist(session?.user?.id);
   const toggleWishlist = useToggleWishlist();
   const isWishlisted = wishlist.includes(product.db_id);
@@ -80,20 +85,21 @@ function ProductPage() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("product_reviews")
-        .select(`
+        .select(
+          `
           id, rating, review_text, created_at, user_id,
           profiles:user_id ( first_name, last_name )
-        `)
+        `,
+        )
         .eq("product_id", product.db_id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
-    }
+    },
   });
 
-  const averageRating = reviews.length > 0 
-    ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length 
-    : 0;
+  const averageRating =
+    reviews.length > 0 ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length : 0;
 
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
@@ -103,18 +109,19 @@ function ProductPage() {
     e.preventDefault();
     if (!session) return;
     setSubmittingReview(true);
-    
+
     const { error } = await supabase.from("product_reviews").insert({
       product_id: product.db_id,
       user_id: session.user.id,
       rating: reviewRating,
-      review_text: reviewText
+      review_text: reviewText,
     });
 
     setSubmittingReview(false);
 
     if (error) {
-      if (error.code === '23505') { // Unique constraint violation
+      if (error.code === "23505") {
+        // Unique constraint violation
         alert("You have already reviewed this product.");
       } else {
         alert("Error submitting review: " + error.message);
@@ -125,8 +132,6 @@ function ProductPage() {
       queryClient.invalidateQueries({ queryKey: ["reviews", product.db_id] });
     }
   };
-
-
 
   const handleAdd = () => {
     if (!size) {
@@ -152,7 +157,9 @@ function ProductPage() {
 
       <div className="mx-auto max-w-[1400px] px-8 py-12">
         <nav className="mb-8 text-xs uppercase tracking-widest text-black/50">
-          <Link to="/" className="hover:text-black">Shop</Link>
+          <Link to="/" className="hover:text-black">
+            Shop
+          </Link>
           <span className="mx-2">/</span>
           <span className="text-black">{product.name}</span>
         </nav>
@@ -177,12 +184,18 @@ function ProductPage() {
                 <h1 className="mt-4 text-5xl font-black uppercase leading-none tracking-tight md:text-6xl">
                   {product.name}
                 </h1>
-                
+
                 {reviews.length > 0 && (
                   <div className="mt-4 flex items-center gap-2">
                     <div className="flex text-black">
-                      {[1, 2, 3, 4, 5].map(star => (
-                        <Star key={star} size={16} className={star <= Math.round(averageRating) ? "fill-current" : "opacity-20"} />
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={16}
+                          className={
+                            star <= Math.round(averageRating) ? "fill-current" : "opacity-20"
+                          }
+                        />
                       ))}
                     </div>
                     <span className="text-sm font-bold uppercase tracking-wider text-black/60">
@@ -236,7 +249,10 @@ function ProductPage() {
                   return (
                     <button
                       key={s}
-                      onClick={() => { setSize(s); setFeedback(null); }}
+                      onClick={() => {
+                        setSize(s);
+                        setFeedback(null);
+                      }}
                       className={`border py-3 text-sm font-medium transition ${
                         active
                           ? "border-black bg-black text-white"
@@ -263,9 +279,7 @@ function ProductPage() {
               >
                 Buy it now
               </button>
-              {feedback && (
-                <p className="text-sm text-black/70">{feedback}</p>
-              )}
+              {feedback && <p className="text-sm text-black/70">{feedback}</p>}
             </div>
 
             <div className="mt-10 grid grid-cols-3 gap-4 border-t border-black/10 pt-8 text-xs uppercase tracking-widest text-black/50">
@@ -286,17 +300,19 @@ function ProductPage() {
             {/* Review List */}
             <div className="space-y-8">
               {reviews.length === 0 ? (
-                <p className="text-black/60 uppercase tracking-wider text-sm font-semibold">No reviews yet. Be the first to share your thoughts!</p>
+                <p className="text-black/60 uppercase tracking-wider text-sm font-semibold">
+                  No reviews yet. Be the first to share your thoughts!
+                </p>
               ) : (
-                reviews.map(review => (
+                reviews.map((review) => (
                   <div key={review.id} className="border-b border-black/5 pb-8 last:border-0">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <div className="h-8 w-8 rounded-full bg-black/5 flex items-center justify-center font-bold text-xs uppercase">
-                          {review.profiles?.first_name?.[0] || review.user_id[0]}
+                          {(review.profiles as any)?.first_name?.[0] || review.user_id[0]}
                         </div>
                         <span className="font-bold uppercase tracking-wider text-sm">
-                          {review.profiles?.first_name || "Guest User"}
+                          {(review.profiles as any)?.first_name || "Guest User"}
                         </span>
                       </div>
                       <div className="text-xs text-black/40 uppercase tracking-widest font-semibold">
@@ -304,8 +320,12 @@ function ProductPage() {
                       </div>
                     </div>
                     <div className="flex text-black mb-3">
-                      {[1, 2, 3, 4, 5].map(star => (
-                        <Star key={star} size={14} className={star <= review.rating ? "fill-current" : "opacity-20"} />
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          size={14}
+                          className={star <= review.rating ? "fill-current" : "opacity-20"}
+                        />
                       ))}
                     </div>
                     <p className="text-black/80">{review.review_text}</p>
@@ -318,25 +338,36 @@ function ProductPage() {
             <div>
               {session ? (
                 <div className="bg-[#f3f2ef] p-8 rounded-xl">
-                  <h3 className="text-xl font-black uppercase tracking-tight mb-6">Write a Review</h3>
+                  <h3 className="text-xl font-black uppercase tracking-tight mb-6">
+                    Write a Review
+                  </h3>
                   <form onSubmit={submitReview} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-widest mb-2">Rating</label>
+                      <label className="block text-xs font-semibold uppercase tracking-widest mb-2">
+                        Rating
+                      </label>
                       <div className="flex gap-2">
-                        {[1, 2, 3, 4, 5].map(star => (
+                        {[1, 2, 3, 4, 5].map((star) => (
                           <button
                             key={star}
                             type="button"
                             onClick={() => setReviewRating(star)}
                             className="p-1 hover:scale-110 transition-transform"
                           >
-                            <Star size={24} className={star <= reviewRating ? "fill-black text-black" : "text-black/20"} />
+                            <Star
+                              size={24}
+                              className={
+                                star <= reviewRating ? "fill-black text-black" : "text-black/20"
+                              }
+                            />
                           </button>
                         ))}
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-widest mb-2">Your Review</label>
+                      <label className="block text-xs font-semibold uppercase tracking-widest mb-2">
+                        Your Review
+                      </label>
                       <textarea
                         required
                         value={reviewText}
@@ -356,9 +387,14 @@ function ProductPage() {
                 </div>
               ) : (
                 <div className="bg-[#f3f2ef] p-8 rounded-xl text-center">
-                  <h3 className="text-xl font-black uppercase tracking-tight mb-4">Write a Review</h3>
+                  <h3 className="text-xl font-black uppercase tracking-tight mb-4">
+                    Write a Review
+                  </h3>
                   <p className="text-black/60 mb-6">You must be signed in to leave a review.</p>
-                  <Link to="/signin" className="inline-block rounded-full bg-black px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85">
+                  <Link
+                    to="/signin"
+                    className="inline-block rounded-full bg-black px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85"
+                  >
                     Sign In
                   </Link>
                 </div>
@@ -370,8 +406,13 @@ function ProductPage() {
         {/* Related */}
         <section className="mt-32">
           <div className="mb-10 flex items-end justify-between">
-            <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">You might also like</h2>
-            <Link to="/" className="text-xs font-semibold uppercase tracking-widest underline underline-offset-4">
+            <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">
+              You might also like
+            </h2>
+            <Link
+              to="/"
+              className="text-xs font-semibold uppercase tracking-widest underline underline-offset-4"
+            >
               Shop all
             </Link>
           </div>

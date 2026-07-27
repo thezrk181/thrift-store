@@ -10,7 +10,7 @@ export function useWishlist(userId: string | undefined) {
         .from("wishlists")
         .select("product_id")
         .eq("user_id", userId);
-      
+
       if (error) throw error;
       return data.map((w) => w.product_id);
     },
@@ -22,7 +22,15 @@ export function useToggleWishlist() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ userId, productId, isWishlisted }: { userId: string; productId: string; isWishlisted: boolean }) => {
+    mutationFn: async ({
+      userId,
+      productId,
+      isWishlisted,
+    }: {
+      userId: string;
+      productId: string;
+      isWishlisted: boolean;
+    }) => {
       if (isWishlisted) {
         // Remove from wishlist
         const { error } = await supabase
@@ -42,10 +50,10 @@ export function useToggleWishlist() {
     onMutate: async ({ userId, productId, isWishlisted }) => {
       await queryClient.cancelQueries({ queryKey: ["wishlist", userId] });
       const previousWishlist = queryClient.getQueryData<string[]>(["wishlist", userId]);
-      
+
       queryClient.setQueryData<string[]>(["wishlist", userId], (old = []) => {
         if (isWishlisted) {
-          return old.filter(id => id !== productId);
+          return old.filter((id) => id !== productId);
         } else {
           return [...old, productId];
         }
