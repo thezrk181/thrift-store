@@ -1,7 +1,16 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { LayoutDashboard, ShoppingBag, Package, Users, LogOut, Store } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Package, Users, LogOut, Store, Ticket, ShoppingCart } from "lucide-react";
+
+const adminLinks = [
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { to: "/admin/products", label: "Products", icon: ShoppingBag },
+  { to: "/admin/orders", label: "Orders", icon: Package },
+  { to: "/admin/users", label: "Users", icon: Users },
+  { to: "/admin/promos", label: "Promo Codes", icon: Ticket },
+  { to: "/admin/abandoned-carts", label: "Carts", icon: ShoppingCart },
+];
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
@@ -22,13 +31,6 @@ function AdminLayout() {
     return <div className="flex min-h-screen items-center justify-center bg-zinc-50">Loading Admin...</div>;
   }
 
-  const navItems = [
-    { label: "Dashboard", path: "/admin", icon: LayoutDashboard, exact: true },
-    { label: "Products", path: "/admin/products", icon: ShoppingBag },
-    { label: "Orders", path: "/admin/orders", icon: Package },
-    { label: "Users", path: "/admin/users", icon: Users },
-  ];
-
   return (
     <div className="flex min-h-screen bg-zinc-50 font-sans text-zinc-900">
       {/* Sidebar */}
@@ -42,24 +44,21 @@ function AdminLayout() {
         
         <div className="flex h-[calc(100vh-4rem)] flex-col justify-between p-4">
           <nav className="space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.exact 
-                ? router.location.pathname === item.path
-                : router.location.pathname.startsWith(item.path);
+            {adminLinks.map((link) => {
+              const Icon = link.icon;
                 
               return (
                 <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive 
-                      ? "bg-black text-white" 
-                      : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
-                  }`}
+                  key={link.to}
+                  to={link.to}
+                  activeOptions={{ exact: link.exact }}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+                  activeProps={{
+                    className: "bg-black text-white hover:bg-black hover:text-white"
+                  }}
                 >
                   <Icon className="h-5 w-5" />
-                  {item.label}
+                  {link.label}
                 </Link>
               );
             })}

@@ -35,6 +35,12 @@ function CheckoutPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Promo Code State
+  const [promoInput, setPromoInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{code: string, type: string, value: number} | null>(null);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [validatingPromo, setValidatingPromo] = useState(false);
+
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
@@ -76,7 +82,56 @@ function CheckoutPage() {
     }
   }, [session, form]);
 
-  const total = subtotal + SHIPPING_COST;
+  const handleApplyPromo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!promoInput.trim()) return;
+    
+    setValidatingPromo(true);
+    setPromoError(null);
+    
+    const { data, error } = await supabase
+      .from("promo_codes")
+      .select("*")
+      .eq("code", promoInput.trim().toUpperCase())
+      .eq("is_active", true)
+      .single();
+      
+    if (error || !data) {
+      setPromoError("Invalid or expired promo code");
+      setAppliedPromo(null);
+    } else {
+      setAppliedPromo({
+        code: data.code,
+        type: data.discount_type,
+        value: Number(data.discount_value)
+      });
+      setPromoError(null);
+      setPromoInput("");
+    }
+    setValidatingPromo(false);
+  };
+
+  const removePromo = () => {
+    setAppliedPromo(null);
+  };
+
+  let discount = 0;
+  let finalShipping = SHIPPING_COST;
+  
+  if (appliedPromo) {
+    if (appliedPromo.type === "percentage") {
+      discount = (subtotal * appliedPromo.value) / 100;
+    } else if (appliedPromo.type === "fixed_amount") {
+      discount = appliedPromo.value;
+    } else if (appliedPromo.type === "free_shipping") {
+      finalShipping = 0;
+    }
+  }
+
+  // Ensure discount doesn't exceed subtotal
+  discount = Math.min(discount, subtotal);
+  
+  const total = subtotal - discount + finalShipping;
 
   const onSubmit = async (data: CheckoutFormValues) => {
     if (items.length === 0) return;
@@ -322,13 +377,44 @@ function CheckoutPage() {
               </div>
 
               <div className="space-y-3 pt-6 border-t border-white/10 text-sm">
-                <div className="flex justify-between text-white/70">
+                
+                {/* Promo Code Input Form */}
+                <form onSubmit={handleApplyPromo} className="mb-4 flex gap-2">
+                  <input
+                    type="text"
+                    value={promoInput}
+                    onChange={(e) => setPromoInput(e.target.value)}
+                    placeholder="Discount code"
+                    className="flex-1 h-10 px-3 rounded-lg bg-zinc-900 border border-zinc-700 text-white placeholder-zinc-500 focus:outline-none focus:border-white text-sm uppercase"
+                  />
+                  <button
+                    type="submit"
+                    disabled={validatingPromo || !promoInput.trim()}
+                    className="h-10 px-4 rounded-lg bg-white text-black font-bold text-xs uppercase hover:bg-zinc-200 disabled:opacity-50"
+                  >
+                    Apply
+                  </button>
+                </form>
+                {promoError && <p className="text-red-400 text-xs mt-1">{promoError}</p>}
+                
+                <div className="flex justify-between text-white/70 mt-4">
                   <span>Subtotal</span>
                   <span>Rs {subtotal}</span>
                 </div>
+
+                {appliedPromo && (
+                  <div className="flex justify-between items-center text-green-400">
+                    <div className="flex items-center gap-2">
+                      <span>Discount ({appliedPromo.code})</span>
+                      <button type="button" onClick={removePromo} className="text-xs underline hover:text-green-300">Remove</button>
+                    </div>
+                    <span>- Rs {discount}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-white/70">
                   <span>Shipping</span>
-                  <span>Rs {SHIPPING_COST}</span>
+                  <span>{finalShipping === 0 ? "FREE" : `Rs ${finalShipping}`}</span>
                 </div>
                 <div className="flex justify-between items-center pt-4 text-xl font-black mt-2">
                   <span>Total</span>

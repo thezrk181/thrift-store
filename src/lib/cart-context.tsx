@@ -1,5 +1,8 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 import { type Product, useProducts } from "./products";
+import { useAuth } from "./auth-context";
+import { supabase } from "./supabase";
+import { useEffect } from "react";
 
 export type CartItem = {
   key: string; // fallback string key
@@ -25,7 +28,24 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const { data: products = [] } = useProducts();
+  const { session } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
+
+  // Sync to database if logged in
+  useEffect(() => {
+    if (!session?.user?.id) return;
+    
+    // Using a simple debounce/timeout to avoid spamming the DB on every single click
+    const timer = setTimeout(async () => {
+      await supabase.from("carts").upsert({
+        user_id: session.user.id,
+        items: items,
+        updated_at: new Date().toISOString()
+      }, { onConflict: "user_id" });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [items, session]);
 
   const value = useMemo<CartContextValue>(() => {
     const getProductForItem = (item: CartItem) =>

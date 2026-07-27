@@ -22,10 +22,12 @@ import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as CategoryCategoryIdRouteImport } from './routes/category.$categoryId'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as AdminAbandonedCartsIndexRouteImport } from './routes/admin/abandoned-carts/index'
 import { Route as AdminOrdersIndexRouteImport } from './routes/admin/orders/index'
 import { Route as AdminProductsIndexRouteImport } from './routes/admin/products/index'
 import { Route as AdminProductsIdRouteImport } from './routes/admin/products/$id'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products/new'
+import { Route as AdminPromosIndexRouteImport } from './routes/admin/promos/index'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
 
 const IndexRoute = IndexRouteImport.update({
@@ -93,6 +95,12 @@ const ProductIdRoute = ProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminAbandonedCartsIndexRoute =
+  AdminAbandonedCartsIndexRouteImport.update({
+    id: '/abandoned-carts/',
+    path: '/abandoned-carts/',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AdminOrdersIndexRoute = AdminOrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
@@ -111,6 +119,11 @@ const AdminProductsIdRoute = AdminProductsIdRouteImport.update({
 const AdminProductsNewRoute = AdminProductsNewRouteImport.update({
   id: '/products/new',
   path: '/products/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPromosIndexRoute = AdminPromosIndexRouteImport.update({
+  id: '/promos/',
+  path: '/promos/',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
@@ -135,8 +148,10 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/abandoned-carts/': typeof AdminAbandonedCartsIndexRoute
   '/admin/orders/': typeof AdminOrdersIndexRoute
   '/admin/products/': typeof AdminProductsIndexRoute
+  '/admin/promos/': typeof AdminPromosIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -154,8 +169,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/abandoned-carts': typeof AdminAbandonedCartsIndexRoute
   '/admin/orders': typeof AdminOrdersIndexRoute
   '/admin/products': typeof AdminProductsIndexRoute
+  '/admin/promos': typeof AdminPromosIndexRoute
   '/admin/users': typeof AdminUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -175,8 +192,10 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
+  '/admin/abandoned-carts/': typeof AdminAbandonedCartsIndexRoute
   '/admin/orders/': typeof AdminOrdersIndexRoute
   '/admin/products/': typeof AdminProductsIndexRoute
+  '/admin/promos/': typeof AdminPromosIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -197,8 +216,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/admin/abandoned-carts/'
     | '/admin/orders/'
     | '/admin/products/'
+    | '/admin/promos/'
     | '/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -216,8 +237,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/admin/abandoned-carts'
     | '/admin/orders'
     | '/admin/products'
+    | '/admin/promos'
     | '/admin/users'
   id:
     | '__root__'
@@ -236,8 +259,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/admin/products/$id'
     | '/admin/products/new'
+    | '/admin/abandoned-carts/'
     | '/admin/orders/'
     | '/admin/products/'
+    | '/admin/promos/'
     | '/admin/users/'
   fileRoutesById: FileRoutesById
 }
@@ -349,6 +374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/abandoned-carts/': {
+      id: '/admin/abandoned-carts/'
+      path: '/abandoned-carts'
+      fullPath: '/admin/abandoned-carts/'
+      preLoaderRoute: typeof AdminAbandonedCartsIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/orders/': {
       id: '/admin/orders/'
       path: '/orders'
@@ -377,6 +409,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProductsNewRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/promos/': {
+      id: '/admin/promos/'
+      path: '/promos'
+      fullPath: '/admin/promos/'
+      preLoaderRoute: typeof AdminPromosIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/users/': {
       id: '/admin/users/'
       path: '/users'
@@ -391,8 +430,10 @@ interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
   AdminProductsIdRoute: typeof AdminProductsIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
+  AdminAbandonedCartsIndexRoute: typeof AdminAbandonedCartsIndexRoute
   AdminOrdersIndexRoute: typeof AdminOrdersIndexRoute
   AdminProductsIndexRoute: typeof AdminProductsIndexRoute
+  AdminPromosIndexRoute: typeof AdminPromosIndexRoute
   AdminUsersIndexRoute: typeof AdminUsersIndexRoute
 }
 
@@ -400,8 +441,10 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
   AdminProductsIdRoute: AdminProductsIdRoute,
   AdminProductsNewRoute: AdminProductsNewRoute,
+  AdminAbandonedCartsIndexRoute: AdminAbandonedCartsIndexRoute,
   AdminOrdersIndexRoute: AdminOrdersIndexRoute,
   AdminProductsIndexRoute: AdminProductsIndexRoute,
+  AdminPromosIndexRoute: AdminPromosIndexRoute,
   AdminUsersIndexRoute: AdminUsersIndexRoute,
 }
 

@@ -23,6 +23,7 @@ function AdminNewProduct() {
   const [category, setCategory] = useState("Men");
   const [condition, setCondition] = useState("Good");
   const [tags, setTags] = useState("");
+  const [isFeatured, setIsFeatured] = useState(false);
   
   // Image state
   const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -66,6 +67,7 @@ function AdminNewProduct() {
           base_price: parseFloat(price),
           category,
           condition,
+          is_featured: isFeatured,
           tags: tags.split(",").map(t => t.trim()).filter(Boolean),
         })
         .select()
@@ -188,6 +190,18 @@ function AdminNewProduct() {
             <div>
               <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-zinc-500">Tags (comma separated)</label>
               <input type="text" value={tags} onChange={e => setTags(e.target.value)} placeholder="e.g. vintage, sneakers, rare" className="w-full rounded-lg border border-zinc-200 p-3 outline-none focus:border-black" />
+            </div>
+            <div className="flex items-center gap-3 sm:col-span-2">
+              <input 
+                type="checkbox" 
+                id="isFeatured"
+                checked={isFeatured} 
+                onChange={e => setIsFeatured(e.target.checked)} 
+                className="h-5 w-5 rounded border-zinc-300 text-black focus:ring-black" 
+              />
+              <label htmlFor="isFeatured" className="text-sm font-bold text-zinc-900">
+                Featured Product (Show on Homepage)
+              </label>
             </div>
           </div>
         </section>

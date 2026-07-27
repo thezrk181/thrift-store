@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { supabase } from "@/lib/supabase";
 import { ShoppingBag, Package, Users, DollarSign, AlertTriangle } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
@@ -32,6 +33,21 @@ function AdminDashboard() {
       const totalRevenue = ordersData?.reduce((acc, order) => acc + Number(order.total_amount), 0) || 0;
       const recentOrders = ordersData?.slice(0, 5) || [];
 
+      // Generate dummy chart data for the last 7 days since we don't have enough real historical data yet
+      const chartData = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        // Look for orders on this day
+        const dayRevenue = (ordersData || []).filter(o => new Date(o.created_at).toDateString() === d.toDateString())
+          .reduce((acc, order) => acc + Number(order.total_amount), 0);
+        
+        chartData.push({
+          name: d.toLocaleDateString('en-US', { weekday: 'short' }),
+          revenue: dayRevenue
+        });
+      }
+
       // Users count & recent
       const { data: usersData, count: usersCount } = await supabase
         .from("profiles")
@@ -60,7 +76,8 @@ function AdminDashboard() {
         totalUsers: usersCount || 0,
         recentOrders,
         recentUsers: usersData || [],
-        lowStock: lowStockVariants || []
+        lowStock: lowStockVariants || [],
+        chartData
       };
     }
   });
@@ -120,12 +137,41 @@ function AdminDashboard() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        {/* Recent Orders */}
-        <div className="lg:col-span-2 rounded-xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
-          <div className="border-b border-zinc-200 p-6 flex justify-between items-center">
-            <h2 className="text-lg font-bold">Recent Orders</h2>
-            <Link to="/admin/orders" className="text-sm font-medium text-blue-600 hover:underline">View All</Link>
+        {/* Main Content Area: Chart & Orders */}
+        <div className="lg:col-span-2 space-y-8">
+          
+          {/* Revenue Chart */}
+          <div className="rounded-xl border border-zinc-200 bg-white shadow-sm overflow-hidden p-6">
+            <h2 className="text-lg font-bold mb-4">Revenue (Last 7 Days)</h2>
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={data.chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#18181b" stopOpacity={0.1}/>
+                      <stop offset="95%" stopColor="#18181b" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#71717a' }} dy={10} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#71717a' }} tickFormatter={(val) => `Rs ${val}`} />
+                  <Tooltip 
+                    contentStyle={{ borderRadius: '8px', border: '1px solid #e4e4e7', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    itemStyle={{ color: '#18181b', fontWeight: 'bold' }}
+                    formatter={(value: number) => [`Rs ${value}`, 'Revenue']}
+                  />
+                  <Area type="monotone" dataKey="revenue" stroke="#18181b" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
+
+          {/* Recent Orders */}
+          <div className="rounded-xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
+            <div className="border-b border-zinc-200 p-6 flex justify-between items-center">
+              <h2 className="text-lg font-bold">Recent Orders</h2>
+              <Link to="/admin/orders" className="text-sm font-medium text-blue-600 hover:underline">View All</Link>
+            </div>
           <table className="w-full text-left text-sm text-zinc-600">
             <thead className="bg-zinc-50 text-xs uppercase text-zinc-500">
               <tr>
@@ -158,6 +204,7 @@ function AdminDashboard() {
               )}
             </tbody>
           </table>
+          </div>
         </div>
 
         {/* Sidebar Widgets */}

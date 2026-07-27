@@ -24,6 +24,12 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const { data: products = [], isLoading } = useProducts();
 
+  // Show featured products on the homepage. If none are featured, fallback to latest.
+  const featuredProducts = products.filter(p => p.is_featured);
+  const displayProducts = featuredProducts.length > 0 
+    ? featuredProducts 
+    : products.slice(0, 8);
+
   return (
     <div className="min-h-screen bg-white text-black">
       <SiteNav theme="light" />
@@ -113,15 +119,17 @@ function HomePage() {
               craft — built to make a statement.
             </p>
           </div>
-          <div className="grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {isLoading ? (
               <p className="py-24 text-center col-span-full">Loading products...</p>
             ) : (
-              products.slice(0, 8).map((p) => <ProductCard key={p.id} product={p} />)
+              displayProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
             )}
           </div>
           
-          {!isLoading && products.length > 0 && (
+          {products.length > 0 && (
             <div className="mt-16 text-center">
               <Link 
                 to="/shop"
