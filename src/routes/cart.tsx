@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { useCart } from "@/lib/cart-context";
@@ -112,29 +113,31 @@ function CartPage() {
             <aside className="lg:col-span-1">
               <div className="sticky top-24 bg-black p-8 text-white">
                 <h2 className="text-2xl font-black uppercase tracking-tight">Order Summary</h2>
-                <dl className="mt-8 space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <dt className="text-white/60">Subtotal</dt>
-                    <dd>Rs {subtotal.toLocaleString()}</dd>
-                  </div>
-                  <div className="flex justify-between">
-                    <dt className="text-white/60">Shipping</dt>
-                    <dd>{shipping === 0 ? "Free" : `Rs ${shipping.toLocaleString()}`}</dd>
-                  </div>
-                  <div className="flex justify-between border-t border-white/15 pt-3">
-                    <dt>Total</dt>
-                    <dd className="text-lg font-semibold">Rs {total.toLocaleString()}</dd>
-                  </div>
-                </dl>
-                <button
-                  onClick={() => alert("Checkout will be wired up to a backend later.")}
-                  className="mt-8 w-full rounded-full bg-white py-4 text-sm font-semibold uppercase tracking-wider text-black hover:bg-white/90"
-                >
-                  Checkout
-                </button>
-                <p className="mt-4 text-xs text-white/50">
-                  Shipping and taxes calculated at checkout.
+                <div className="flex justify-between items-center text-sm mb-4 mt-8">
+                  <span className="text-zinc-400 font-medium">Subtotal</span>
+                  <span className="font-semibold text-lg">Rs {subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm mb-4">
+                  <span className="text-zinc-400 font-medium">Shipping</span>
+                  <span className="font-semibold text-lg">Rs 250</span>
+                </div>
+                
+                <div className="border-t border-white/15 my-4 pt-4 flex justify-between items-center text-lg">
+                  <span className="font-bold">Total</span>
+                  <span className="font-black text-xl">Rs {(subtotal + 250).toLocaleString()}</span>
+                </div>
+
+                <p className="text-xs text-zinc-400 mb-6 text-center">
+                  Taxes and international shipping calculated at checkout
                 </p>
+
+                <Link
+                  to="/checkout"
+                  className="w-full flex items-center justify-center gap-2 bg-white text-black h-14 rounded-full font-bold uppercase tracking-wider text-sm hover:bg-white/90 transition-colors"
+                >
+                  Proceed to Checkout
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
             </aside>
           </div>

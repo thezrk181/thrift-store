@@ -9,6 +9,7 @@ export type Product = {
   image: string;
   sizes: number[];
   colors: { name: string; hex: string }[];
+  variants: { id: string; size: number; color: string; stock_quantity: number }[];
   category: string;
   tags: string[];
   description: string;
@@ -33,6 +34,14 @@ function transformProduct(p: any): Product {
     }
   });
 
+  // Expose the raw variants to match for cart ID
+  const variants = p.product_variants?.map((v: any) => ({
+    id: v.id,
+    size: parseFloat(v.size),
+    color: v.color_name,
+    stock_quantity: v.stock_quantity || 0,
+  })) || [];
+
   return {
     id: p.slug, // the old frontend expects the URL slug as the 'id' field
     name: p.name,
@@ -40,6 +49,7 @@ function transformProduct(p: any): Product {
     image: getProductImageUrl(primaryImage),
     sizes,
     colors: Array.from(colorsMap.values()),
+    variants,
     category: p.category,
     tags: p.tags || [],
     description: p.description || "",
@@ -50,7 +60,7 @@ export async function fetchProducts(): Promise<Product[]> {
   const { data, error } = await supabase.from("products").select(`
       *,
       product_images ( image_path, is_primary ),
-      product_variants ( size, color_name, color_hex )
+      product_variants ( id, size, color_name, color_hex, stock_quantity )
     `);
 
   if (error) {
@@ -70,7 +80,7 @@ export async function fetchProductByIdOrSlug(
       `
       *,
       product_images ( image_path, is_primary ),
-      product_variants ( size, color_name, color_hex )
+      product_variants ( id, size, color_name, color_hex, stock_quantity )
     `
     )
     .eq("slug", idOrSlug)
@@ -84,7 +94,7 @@ export async function fetchProductByIdOrSlug(
         `
         *,
         product_images ( image_path, is_primary ),
-        product_variants ( size, color_name, color_hex )
+        product_variants ( id, size, color_name, color_hex, stock_quantity )
       `
       )
       .eq("id", idOrSlug)
@@ -109,4 +119,26 @@ export function useProduct(slug: string) {
     queryKey: ["product", slug],
     queryFn: () => fetchProductByIdOrSlug(slug),
   });
+}
+
+// Order placement API call
+export async function placeOrder(
+  userId: string | null,
+  shippingAddress: any,
+  totalAmount: number,
+  items: { variant_id: string; quantity: number; price_at_time: number }[]
+) {
+  const { data, error } = await supabase.rpc("place_order_with_inventory", {
+    p_user_id: userId,
+    p_shipping_address: shippingAddress,
+    p_total_amount: totalAmount,
+    p_items: items,
+  });
+
+  if (error) {
+    console.error("Error placing order:", error);
+    throw new Error(error.message);
+  }
+
+  return data;
 }

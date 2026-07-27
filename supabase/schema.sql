@@ -71,6 +71,7 @@ CREATE TYPE order_status AS ENUM ('pending', 'paid', 'shipped', 'delivered', 'ca
 
 CREATE TABLE public.orders (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  order_number TEXT UNIQUE NOT NULL,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL, -- Nullable for guests
   status order_status DEFAULT 'pending',
   total_amount NUMERIC(10, 2) NOT NULL,
@@ -108,6 +109,78 @@ CREATE POLICY "Users can insert their own order items." ON public.order_items FO
     WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid()
   )
 );
+
+-- ==========================================
+-- RPC FUNCTIONS
+-- ==========================================
+
+-- Safely place an order and decrement inventory in a single transaction
+CREATE OR REPLACE FUNCTION public.place_order_with_inventory(
+  p_user_id UUID,
+  p_shipping_address JSONB,
+  p_total_amount NUMERIC,
+  p_items JSONB -- Array of { variant_id: UUID, quantity: INTEGER, price_at_time: NUMERIC }
+) RETURNS JSONB
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_order_id UUID;
+  v_order_number TEXT;
+  v_item JSONB;
+  v_variant_id UUID;
+  v_quantity INTEGER;
+  v_price NUMERIC;
+  v_current_stock INTEGER;
+BEGIN
+  -- 1. Generate a unique 8-character alphanumeric order number
+  v_order_number := 'ORD-' || upper(substr(md5(random()::text), 1, 8));
+
+  -- 2. Create the order record
+  INSERT INTO public.orders (order_number, user_id, status, total_amount, shipping_address)
+  VALUES (v_order_number, p_user_id, 'pending', p_total_amount, p_shipping_address)
+  RETURNING id INTO v_order_id;
+
+  -- 3. Loop through items, check inventory, decrement, and create order_items
+  FOR v_item IN SELECT * FROM jsonb_array_elements(p_items)
+  LOOP
+    v_variant_id := (v_item->>'variant_id')::UUID;
+    v_quantity := (v_item->>'quantity')::INTEGER;
+    v_price := (v_item->>'price_at_time')::NUMERIC;
+
+    -- Lock the row for update to prevent concurrent race conditions
+    SELECT stock_quantity INTO v_current_stock
+    FROM public.product_variants
+    WHERE id = v_variant_id
+    FOR UPDATE;
+
+    IF v_current_stock IS NULL THEN
+      RAISE EXCEPTION 'Variant ID % does not exist.', v_variant_id;
+    END IF;
+
+    IF v_current_stock < v_quantity THEN
+      RAISE EXCEPTION 'Insufficient stock for variant %. Requested: %, Available: %', v_variant_id, v_quantity, v_current_stock;
+    END IF;
+
+    -- Decrement stock
+    UPDATE public.product_variants
+    SET stock_quantity = stock_quantity - v_quantity
+    WHERE id = v_variant_id;
+
+    -- Insert order item
+    INSERT INTO public.order_items (order_id, product_variant_id, quantity, price_at_time)
+    VALUES (v_order_id, v_variant_id, v_quantity, v_price);
+  END LOOP;
+
+  -- 4. Return success with the new order ID and order number
+  RETURN jsonb_build_object('success', true, 'order_id', v_order_id, 'order_number', v_order_number);
+EXCEPTION
+  WHEN OTHERS THEN
+    -- If any error occurs, the transaction automatically rolls back.
+    -- We re-raise the error so the client knows what failed.
+    RAISE;
+END;
+$$;
 
 -- ==========================================
 -- STORAGE BUCKETS

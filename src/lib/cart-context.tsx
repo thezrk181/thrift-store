@@ -2,7 +2,8 @@ import { createContext, useContext, useMemo, useState, type ReactNode } from "re
 import { type Product, useProducts } from "./products";
 
 export type CartItem = {
-  key: string; // productId + size + color
+  key: string; // fallback string key
+  variantId: string; // The database variant ID
   productId: string;
   size: number;
   color: string;
@@ -31,15 +32,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
       products.find((p) => p.id === item.productId);
 
     const addItem = (productId: string, size: number, color: string, quantity = 1) => {
+      const p = products.find((p) => p.id === productId);
+      const variant = p?.variants?.find((v) => v.size === size && v.color === color);
+      const variantId = variant?.id || "";
+
       const key = `${productId}__${size}__${color}`;
       setItems((prev) => {
         const existing = prev.find((i) => i.key === key);
         if (existing) {
+          const newQty = existing.quantity + quantity;
+          const maxStock = variant?.stock_quantity ?? Infinity;
           return prev.map((i) =>
-            i.key === key ? { ...i, quantity: i.quantity + quantity } : i,
+            i.key === key ? { ...i, quantity: Math.min(newQty, maxStock) } : i,
           );
         }
-        return [...prev, { key, productId, size, color, quantity }];
+        return [...prev, { key, variantId, productId, size, color, quantity }];
       });
     };
 
@@ -47,11 +54,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setItems((prev) => prev.filter((i) => i.key !== key));
 
     const updateQuantity = (key: string, quantity: number) =>
-      setItems((prev) =>
-        prev
-          .map((i) => (i.key === key ? { ...i, quantity: Math.max(1, quantity) } : i))
-          .filter((i) => i.quantity > 0),
-      );
+      setItems((prev) => {
+        return prev
+          .map((i) => {
+            if (i.key === key) {
+              const p = products.find((prod) => prod.id === i.productId);
+              const variant = p?.variants?.find((v) => v.size === i.size && v.color === i.color);
+              const maxStock = variant?.stock_quantity ?? Infinity;
+              return { ...i, quantity: Math.min(Math.max(1, quantity), maxStock) };
+            }
+            return i;
+          })
+          .filter((i) => i.quantity > 0);
+      });
 
     const clear = () => setItems([]);
 
