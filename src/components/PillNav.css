@@ -132,6 +132,10 @@
   z-index: 4;
 }
 
+.mobile-only {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .desktop-only {
     display: none !important;
