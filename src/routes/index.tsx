@@ -5,7 +5,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useProducts } from "@/lib/products";
 import heroImg from "@/assets/shoe-hero.jpg";
 import vibeImg from "@/assets/vibe.jpg";
-import LiquidEther from "@/components/LiquidEther";
+import Ferrofluid from "@/components/Ferrofluid";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,17 +30,27 @@ function HomePage() {
 
       {/* HERO */}
       <section id="hero-section" className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 z-0">
-          <LiquidEther
-            resolution={0.25}
-            iterationsViscous={16}
-            iterationsPoisson={16}
-            cursorSize={50}
+        <div className="absolute inset-0 z-0 bg-black">
+          <Ferrofluid
+            colors={["#ffffff", "#ffffff", "#ffffff"]}
+            speed={0.5}
+            scale={1}
+            turbulence={1}
+            fluidity={0.1}
+            rimWidth={0.2}
+            sharpness={3}
+            shimmer={1}
+            glow={2}
+            flowDirection="down"
+            opacity={1}
+            mouseInteraction={true}
+            mouseStrength={1}
+            mouseRadius={0.3}
           />
         </div>
-        <div className="relative z-10 mx-auto grid max-w-[1400px] gap-10 px-8 pt-16 pb-8 md:grid-cols-12 md:pt-24">
+        <div className="relative z-10 mx-auto grid max-w-[1400px] gap-10 px-8 pt-16 pb-8 md:grid-cols-12 md:pt-24 text-white">
           <div className="md:col-span-6">
-            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-black/50">
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-white/50">
               SS26 · Collection 04
             </p>
             <h1 className="text-[clamp(3rem,7vw,6.5rem)] font-black uppercase leading-[0.9] tracking-tight">
@@ -50,17 +60,17 @@ function HomePage() {
               <br />
               <span className="italic font-serif font-normal">long haul.</span>
             </h1>
-            <p className="mt-8 max-w-md text-base text-black/60">
+            <p className="mt-8 max-w-md text-base text-white/60">
               A footwear studio making considered runners in small batches.
               Materials that last, silhouettes that don't shout.
             </p>
             <div className="mt-10 flex items-center gap-4">
               <a
                 href="#grid"
-                className="inline-flex items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85"
+                className="inline-flex items-center gap-3 rounded-full bg-white px-7 py-4 text-sm font-semibold uppercase tracking-wider text-black hover:bg-white/85"
               >
                 Shop the drop
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-black">↗</span>
+                <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-black text-white">↗</span>
               </a>
               <Link
                 to="/product/$id"
@@ -73,7 +83,7 @@ function HomePage() {
           </div>
           <div className="relative md:col-span-6">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="select-none text-[clamp(6rem,16vw,16rem)] font-black uppercase tracking-tighter text-transparent [-webkit-text-stroke:1px_rgba(0,0,0,0.08)]">
+              <span className="select-none text-[clamp(6rem,16vw,16rem)] font-black uppercase tracking-tighter text-transparent [-webkit-text-stroke:1px_rgba(255,255,255,0.08)]">
                 RUN
               </span>
             </div>
@@ -86,12 +96,12 @@ function HomePage() {
             />
           </div>
         </div>
-        <div className="relative z-10 border-t border-black/10">
+        <div className="relative z-10 border-t border-white/10 text-white">
           <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-8 px-8 py-6 text-sm md:grid-cols-4">
-            <div><span className="font-black text-lg">120+</span><p className="text-black/50">Happy customers</p></div>
-            <div><span className="font-black text-lg">4.9/5</span><p className="text-black/50">Avg. rating</p></div>
-            <div><span className="font-black text-lg">08</span><p className="text-black/50">Silhouettes</p></div>
-            <div><span className="font-black text-lg">Free</span><p className="text-black/50">Shipping over Rs 22,400</p></div>
+            <div><span className="font-black text-lg">120+</span><p className="text-white/50">Happy customers</p></div>
+            <div><span className="font-black text-lg">4.9/5</span><p className="text-white/50">Avg. rating</p></div>
+            <div><span className="font-black text-lg">08</span><p className="text-white/50">Silhouettes</p></div>
+            <div><span className="font-black text-lg">Free</span><p className="text-white/50">Shipping over Rs 22,400</p></div>
           </div>
         </div>
       </section>
