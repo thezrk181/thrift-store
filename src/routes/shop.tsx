@@ -24,7 +24,7 @@ function ShopPage() {
   const [selectedSizes, setSelectedSizes] = useState<number[]>([]);
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
-  const [maxPrice, setMaxPrice] = useState<number>(30000);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   // Derived filter options from actual products
@@ -72,7 +72,7 @@ function ShopPage() {
       }
 
       // Price Match
-      if (p.price > maxPrice) return false;
+      if (maxPrice !== null && p.price > maxPrice) return false;
 
       return true;
     });
@@ -87,7 +87,7 @@ function ShopPage() {
     setSelectedSizes([]);
     setSelectedColors([]);
     setSelectedConditions([]);
-    setMaxPrice(30000);
+    setMaxPrice(null);
   };
 
   return (
@@ -131,21 +131,24 @@ function ShopPage() {
               </button>
             </div>
 
-            <div className="space-y-10">
+            <div className="space-y-12 pr-6 pb-20 md:pb-0">
               {/* Category */}
               <div>
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Category</h3>
-                <div className="space-y-2">
+                <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Category</h3>
+                <div className="flex flex-col gap-2">
                   {availableCategories.map((cat) => (
-                    <label key={cat} className="flex cursor-pointer items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedCategories.includes(cat)}
-                        onChange={() => toggleFilter(setSelectedCategories, cat)}
-                        className="h-4 w-4 rounded-sm border-black/20 text-black focus:ring-black"
-                      />
-                      <span className="text-sm text-black/70">{cat}</span>
-                    </label>
+                    <button
+                      key={cat}
+                      onClick={() => toggleFilter(setSelectedCategories, cat)}
+                      className={`group flex items-center justify-between rounded-lg px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all ${
+                        selectedCategories.includes(cat)
+                          ? "bg-black text-white shadow-md"
+                          : "bg-black/5 text-black/70 hover:bg-black/10 hover:text-black"
+                      }`}
+                    >
+                      <span>{cat}</span>
+                      <span className={`inline-block h-2 w-2 rounded-full transition-transform ${selectedCategories.includes(cat) ? "bg-white scale-100" : "bg-black/20 scale-0 group-hover:scale-100"}`} />
+                    </button>
                   ))}
                 </div>
               </div>
@@ -153,16 +156,16 @@ function ShopPage() {
               {/* Size */}
               {availableSizes.length > 0 && (
                 <div>
-                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Size (US)</h3>
-                  <div className="grid grid-cols-4 gap-2">
+                  <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Size (US)</h3>
+                  <div className="grid grid-cols-3 gap-2">
                     {availableSizes.map((size) => (
                       <button
                         key={size}
                         onClick={() => toggleFilter(setSelectedSizes, size)}
-                        className={`rounded border py-2 text-sm transition-colors ${
+                        className={`rounded-lg py-3 text-sm font-bold transition-all ${
                           selectedSizes.includes(size)
-                            ? "border-black bg-black text-white"
-                            : "border-black/10 hover:border-black"
+                            ? "bg-black text-white shadow-md shadow-black/20"
+                            : "bg-white border border-black/10 text-black/70 hover:border-black hover:text-black hover:shadow-sm"
                         }`}
                       >
                         {size}
@@ -175,16 +178,16 @@ function ShopPage() {
               {/* Color */}
               {availableColors.length > 0 && (
                 <div>
-                  <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Color</h3>
+                  <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Color</h3>
                   <div className="flex flex-wrap gap-3">
                     {availableColors.map((color) => (
                       <button
                         key={color.name}
                         onClick={() => toggleFilter(setSelectedColors, color.name)}
-                        className={`group relative h-8 w-8 rounded-full border-2 transition-all ${
+                        className={`group relative h-10 w-10 rounded-full border-2 transition-all ${
                           selectedColors.includes(color.name)
-                            ? "border-black scale-110"
-                            : "border-transparent hover:scale-110"
+                            ? "border-black scale-110 shadow-lg"
+                            : "border-transparent hover:scale-110 hover:shadow-md"
                         }`}
                         title={color.name}
                       >
@@ -198,37 +201,47 @@ function ShopPage() {
                 </div>
               )}
 
-              {/* Price Range */}
-              <div>
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">
-                  Max Price: Rs {maxPrice.toLocaleString()}
-                </h3>
-                <input
-                  type="range"
-                  min="0"
-                  max="50000"
-                  step="500"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
-                  className="w-full accent-black"
-                />
-              </div>
-
               {/* Condition */}
               <div>
-                <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Condition</h3>
-                <div className="space-y-2">
+                <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-black/50">Condition</h3>
+                <div className="flex flex-col gap-2">
                   {availableConditions.map((cond) => (
-                    <label key={cond} className="flex cursor-pointer items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedConditions.includes(cond)}
-                        onChange={() => toggleFilter(setSelectedConditions, cond)}
-                        className="h-4 w-4 rounded-sm border-black/20 text-black focus:ring-black"
-                      />
-                      <span className="text-sm text-black/70">{cond}</span>
-                    </label>
+                    <button
+                      key={cond}
+                      onClick={() => toggleFilter(setSelectedConditions, cond)}
+                      className={`group flex items-center justify-between rounded-lg px-4 py-3 text-sm font-bold uppercase tracking-wider transition-all ${
+                        selectedConditions.includes(cond)
+                          ? "bg-black text-white shadow-md"
+                          : "bg-black/5 text-black/70 hover:bg-black/10 hover:text-black"
+                      }`}
+                    >
+                      <span>{cond}</span>
+                    </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Price Range */}
+              <div>
+                <div className="mb-4 flex items-center justify-between">
+                  <h3 className="text-xs font-black uppercase tracking-widest text-black/50">Max Price</h3>
+                  {maxPrice !== null && (
+                    <button onClick={() => setMaxPrice(null)} className="text-xs font-bold uppercase underline text-black/60 hover:text-black">Reset</button>
+                  )}
+                </div>
+                <div className="relative pt-2">
+                  <input
+                    type="range"
+                    min="5000"
+                    max="60000"
+                    step="1000"
+                    value={maxPrice === null ? 60000 : maxPrice}
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                    className="w-full h-1.5 appearance-none bg-black/10 rounded-full outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:transition-transform hover:[&::-webkit-slider-thumb]:scale-125"
+                  />
+                  <div className="mt-4 font-bold tracking-wider flex justify-center py-2 bg-[#f3f2ef] rounded-lg">
+                    {maxPrice === null ? "Any Price" : `Under Rs ${maxPrice.toLocaleString()}`}
+                  </div>
                 </div>
               </div>
 
@@ -237,12 +250,12 @@ function ShopPage() {
                 selectedSizes.length > 0 ||
                 selectedColors.length > 0 ||
                 selectedConditions.length > 0 ||
-                maxPrice < 30000) && (
+                maxPrice !== null) && (
                 <button
                   onClick={clearFilters}
-                  className="w-full rounded border border-black/20 py-3 text-sm font-semibold uppercase tracking-wider text-black/60 transition-colors hover:border-black hover:text-black"
+                  className="w-full rounded-xl bg-black py-4 text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-black/85 hover:shadow-lg hover:-translate-y-1"
                 >
-                  Clear Filters
+                  Clear All Filters
                 </button>
               )}
             </div>
