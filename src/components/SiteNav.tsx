@@ -150,8 +150,8 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
       </div>
 
       {/* Main Pill Navigation */}
-      <div className={`pointer-events-auto relative flex items-center justify-between gap-4 md:gap-8 bg-white/70 dark:bg-black/70 backdrop-blur-md px-2 py-2 rounded-[28px] border shadow-2xl transition-all ${isDark ? 'border-white/10' : 'border-black/10'}`}>
-        <Link to="/" className="pl-4 font-black text-xl uppercase tracking-tighter">SOLE WALA</Link>
+      <div className={`pointer-events-auto relative flex items-center justify-between gap-4 md:gap-8 bg-white/70 dark:bg-black/70 backdrop-blur-md px-2 py-2 rounded-[28px] border shadow-2xl transition-all w-full md:w-auto ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+        <Link to="/" className="pl-2 md:pl-4 font-black text-lg md:text-xl uppercase tracking-tighter whitespace-nowrap">SOLE WALA</Link>
         <PillNav
           items={navItems}
           baseColor={baseColor}
