@@ -14,7 +14,7 @@ export const Route = createFileRoute("/profile")({
 
 function ProfilePage() {
   const navigate = useNavigate();
-  const { session, signOut } = useAuth();
+  const { session, profile: authProfile, isAdmin, signOut } = useAuth();
   
   const [activeTab, setActiveTab] = useState<"orders" | "address">("orders");
   const [profile, setProfile] = useState<any>(null);
@@ -102,21 +102,32 @@ function ProfilePage() {
       <SiteNav theme="light" />
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-8 py-16">
-        <header className="mb-12 flex items-end justify-between border-b border-black/10 pb-8">
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-16 border-b border-black/10 pb-8">
           <div>
             <h1 className="text-4xl font-black uppercase tracking-tight">
               My Account
             </h1>
             <p className="mt-2 text-sm text-black/60">
-              Welcome back, {profile?.first_name || session.user.email}
+              Welcome back, {profile?.first_name || "User"}
             </p>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="text-xs font-bold uppercase tracking-wider underline hover:text-black/70"
-          >
-            Sign out
-          </button>
+          
+          <div className="flex items-center gap-4">
+            {isAdmin && (
+              <Link
+                to="/admin"
+                className="rounded-full bg-black px-6 py-2 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-black/80"
+              >
+                Admin Panel
+              </Link>
+            )}
+            <button
+              onClick={handleSignOut}
+              className="text-xs font-bold uppercase tracking-wider underline hover:text-black/70"
+            >
+              Sign Out
+            </button>
+          </div>
         </header>
 
         <div className="grid gap-16 md:grid-cols-4">

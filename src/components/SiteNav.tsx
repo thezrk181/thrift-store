@@ -3,11 +3,11 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 import { useProducts } from "@/lib/products";
-import { Search, X, User, Heart } from "lucide-react";
+import { Search, X, User, Heart, Shield } from "lucide-react";
 
 export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const { count } = useCart();
-  const { session } = useAuth();
+  const { session, isAdmin } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: products = [] } = useProducts();
@@ -136,6 +136,11 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
 
           {session ? (
             <>
+              {isAdmin && (
+                <Link to="/admin" className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`} title="Admin Panel">
+                  <Shield size={20} />
+                </Link>
+              )}
               <Link to="/wishlist" className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}>
                 <Heart size={20} />
               </Link>
