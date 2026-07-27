@@ -31,7 +31,12 @@ function HomePage() {
       {/* HERO */}
       <section id="hero-section" className="relative overflow-hidden bg-white">
         <div className="absolute inset-0 z-0">
-          <LiquidEther />
+          <LiquidEther
+            resolution={0.25}
+            iterationsViscous={16}
+            iterationsPoisson={16}
+            cursorSize={50}
+          />
         </div>
         <div className="relative z-10 mx-auto grid max-w-[1400px] gap-10 px-8 pt-16 pb-8 md:grid-cols-12 md:pt-24">
           <div className="md:col-span-6">
