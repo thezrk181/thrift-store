@@ -5,8 +5,9 @@ import { ProductCard } from "@/components/ProductCard";
 import { useProducts } from "@/lib/products";
 import heroImg from "@/assets/shoe-hero.jpg";
 import vibeImg from "@/assets/vibe.jpg";
+import { lazy, Suspense } from "react";
 // @ts-ignore
-import LiquidEther from "@/components/LiquidEther";
+const LiquidEther = lazy(() => import("@/components/LiquidEther"));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,13 +44,15 @@ function HomePage() {
 
       {/* HERO */}
       <section id="hero-section" className="relative overflow-hidden bg-white">
-        <div className="absolute inset-0 z-0">
-          <LiquidEther
-            resolution={0.25}
-            iterationsViscous={16}
-            iterationsPoisson={16}
-            cursorSize={50}
-          />
+        <div className="absolute inset-0 z-0 bg-white">
+          <Suspense fallback={<div className="h-full w-full bg-white" />}>
+            <LiquidEther
+              resolution={0.25}
+              iterationsViscous={16}
+              iterationsPoisson={16}
+              cursorSize={50}
+            />
+          </Suspense>
         </div>
         <div className="relative z-10 mx-auto grid max-w-[1400px] gap-10 px-8 pt-16 pb-8 md:grid-cols-12 md:pt-24">
           <div className="md:col-span-6">
