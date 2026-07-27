@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase, getImageUrl } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
+import { getProductImageUrl } from "@/lib/image-service";
 import { ArrowLeft, MapPin, Package, User, Clock, CreditCard } from "lucide-react";
 import { useState } from "react";
 
@@ -119,7 +120,7 @@ function OrderDetailsPage() {
                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
                       {primaryImage ? (
                         <img 
-                          src={getImageUrl(primaryImage)} 
+                          src={getProductImageUrl(primaryImage)} 
                           alt={product?.name} 
                           className="h-full w-full object-cover"
                         />

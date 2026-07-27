@@ -24,6 +24,7 @@ import { Route as CategoryCategoryIdRouteImport } from './routes/category.$categ
 import { Route as ProductIdRouteImport } from './routes/product.$id'
 import { Route as AdminAbandonedCartsIndexRouteImport } from './routes/admin/abandoned-carts/index'
 import { Route as AdminOrdersIndexRouteImport } from './routes/admin/orders/index'
+import { Route as AdminOrdersIdRouteImport } from './routes/admin/orders/$id'
 import { Route as AdminProductsIndexRouteImport } from './routes/admin/products/index'
 import { Route as AdminProductsIdRouteImport } from './routes/admin/products/$id'
 import { Route as AdminProductsNewRouteImport } from './routes/admin/products/new'
@@ -106,6 +107,11 @@ const AdminOrdersIndexRoute = AdminOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminOrdersIdRoute = AdminOrdersIdRouteImport.update({
+  id: '/orders/$id',
+  path: '/orders/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminProductsIndexRoute = AdminProductsIndexRouteImport.update({
   id: '/products/',
   path: '/products/',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/product/$id': typeof ProductIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/orders/$id': typeof AdminOrdersIdRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/admin/abandoned-carts/': typeof AdminAbandonedCartsIndexRoute
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/product/$id': typeof ProductIdRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/orders/$id': typeof AdminOrdersIdRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/admin/abandoned-carts': typeof AdminAbandonedCartsIndexRoute
@@ -190,6 +198,7 @@ export interface FileRoutesById {
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/product/$id': typeof ProductIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/orders/$id': typeof AdminOrdersIdRoute
   '/admin/products/$id': typeof AdminProductsIdRoute
   '/admin/products/new': typeof AdminProductsNewRoute
   '/admin/abandoned-carts/': typeof AdminAbandonedCartsIndexRoute
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
     | '/category/$categoryId'
     | '/product/$id'
     | '/admin/'
+    | '/admin/orders/$id'
     | '/admin/products/$id'
     | '/admin/products/new'
     | '/admin/abandoned-carts/'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/category/$categoryId'
     | '/product/$id'
     | '/admin'
+    | '/admin/orders/$id'
     | '/admin/products/$id'
     | '/admin/products/new'
     | '/admin/abandoned-carts'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/category/$categoryId'
     | '/product/$id'
     | '/admin/'
+    | '/admin/orders/$id'
     | '/admin/products/$id'
     | '/admin/products/new'
     | '/admin/abandoned-carts/'
@@ -388,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/orders/$id': {
+      id: '/admin/orders/$id'
+      path: '/orders/$id'
+      fullPath: '/admin/orders/$id'
+      preLoaderRoute: typeof AdminOrdersIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/products/': {
       id: '/admin/products/'
       path: '/products'
@@ -428,6 +447,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminOrdersIdRoute: typeof AdminOrdersIdRoute
   AdminProductsIdRoute: typeof AdminProductsIdRoute
   AdminProductsNewRoute: typeof AdminProductsNewRoute
   AdminAbandonedCartsIndexRoute: typeof AdminAbandonedCartsIndexRoute
@@ -439,6 +459,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminOrdersIdRoute: AdminOrdersIdRoute,
   AdminProductsIdRoute: AdminProductsIdRoute,
   AdminProductsNewRoute: AdminProductsNewRoute,
   AdminAbandonedCartsIndexRoute: AdminAbandonedCartsIndexRoute,
