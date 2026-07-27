@@ -5,6 +5,8 @@ import { supabase } from "./supabase";
 type AuthContextValue = {
   user: User | null;
   session: Session | null;
+  profile: any | null;
+  isAdmin: boolean;
   isLoading: boolean;
   signOut: () => Promise<void>;
 };
@@ -14,14 +16,32 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<any | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const fetchProfile = async (userId: string) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", userId)
+      .single();
+    if (data) {
+      setProfile(data);
+      setIsAdmin(!!data.is_admin);
+    }
+  };
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setIsLoading(false);
+      if (session?.user) {
+        fetchProfile(session.user.id).finally(() => setIsLoading(false));
+      } else {
+        setIsLoading(false);
+      }
     });
 
     // Listen for changes
@@ -30,6 +50,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      } else {
+        setProfile(null);
+        setIsAdmin(false);
+      }
       setIsLoading(false);
     });
 
@@ -41,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signOut }}>
+    <AuthContext.Provider value={{ user, session, profile, isAdmin, isLoading, signOut }}>
       {children}
     </AuthContext.Provider>
   );
