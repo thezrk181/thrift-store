@@ -1,108 +1,167 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { SiteNav } from "@/components/SiteNav";
+import { SiteFooter } from "@/components/SiteFooter";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
-    meta: [
-      { title: "Create Account — Sole Wala" },
-      { name: "description", content: "Create your Sole Wala account for early access and order history." },
-      { property: "og:title", content: "Create Account — Sole Wala" },
-      { property: "og:description", content: "Create your Sole Wala account." },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Sign Up — Sole Wala" }],
   }),
   component: SignUpPage,
 });
 
 function SignUpPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const { session } = useAuth();
+  
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const onSubmit = (e: FormEvent) => {
+  // Redirect if already logged in
+  if (session) {
+    navigate({ to: "/profile", replace: true });
+    return null;
+  }
+
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Account created for ${form.email} (demo)`);
-    navigate({ to: "/" });
+    setLoading(true);
+    setError(null);
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+        },
+      },
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      setSuccess(true);
+      setLoading(false);
+    }
   };
 
-  const upd = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm({ ...form, [k]: e.target.value });
-
   return (
-    <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
-      <div className="flex flex-col items-center justify-center bg-white px-8 py-16 md:order-1">
-        <div className="w-full max-w-sm">
-          <Link to="/" className="mb-12 block text-lg font-black uppercase tracking-tight md:hidden">
-            Sole Wala
-          </Link>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/50">Account</p>
-          <h2 className="mt-3 text-4xl font-black uppercase tracking-tight">Create Account</h2>
+    <div className="flex min-h-screen flex-col bg-white text-black">
+      <SiteNav theme="light" />
 
-          <form onSubmit={onSubmit} className="mt-10 space-y-6">
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-widest">Name</label>
-              <input
-                type="text"
-                required
-                value={form.name}
-                onChange={upd("name")}
-                className="w-full border-b border-black/20 bg-transparent py-3 text-sm outline-none focus:border-black"
-                placeholder="Your name"
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-widest">Email</label>
-              <input
-                type="email"
-                required
-                value={form.email}
-                onChange={upd("email")}
-                className="w-full border-b border-black/20 bg-transparent py-3 text-sm outline-none focus:border-black"
-                placeholder="you@example.com"
-              />
-            </div>
-            <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-widest">Password</label>
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={form.password}
-                onChange={upd("password")}
-                className="w-full border-b border-black/20 bg-transparent py-3 text-sm outline-none focus:border-black"
-                placeholder="At least 6 characters"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full rounded-full bg-black py-4 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85"
-            >
-              Create account
-            </button>
-          </form>
-
-          <p className="mt-8 text-sm text-black/60">
-            Already have an account?{" "}
-            <Link to="/signin" className="font-semibold text-black underline underline-offset-4">
-              Sign in
-            </Link>
-          </p>
-        </div>
-      </div>
-
-      <div className="hidden bg-black text-white md:flex md:flex-col md:justify-between md:p-12">
-        <Link to="/" className="text-lg font-black uppercase tracking-tight">Sole Wala</Link>
-        <div>
-          <h1 className="text-6xl font-black uppercase leading-[0.9] tracking-tight">
-            Join the
-            <br />
-            <span className="italic font-serif font-normal">rotation.</span>
+      <main className="flex flex-1 items-center justify-center px-8 py-20">
+        <div className="w-full max-w-md">
+          <h1 className="mb-8 text-center text-4xl font-black uppercase tracking-tight">
+            Create Account
           </h1>
-          <p className="mt-8 max-w-sm text-white/60">
-            Members get first look at every drop, saved sizes across devices, and free returns.
-          </p>
+
+          {success ? (
+            <div className="rounded border border-green-500/20 bg-green-50 p-6 text-center text-green-800">
+              <h2 className="mb-2 text-lg font-bold">Check your email!</h2>
+              <p className="text-sm">
+                We've sent a confirmation link to {email}. Please verify your email to continue.
+              </p>
+              <div className="mt-6">
+                <Link to="/signin" className="font-bold uppercase tracking-wider underline">
+                  Back to Sign In
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSignUp} className="space-y-6">
+              {error && (
+                <div className="rounded border border-red-500/20 bg-red-50 p-4 text-sm text-red-600">
+                  {error}
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full rounded border border-black/20 px-4 py-3 text-sm focus:border-black focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="w-full rounded border border-black/20 px-4 py-3 text-sm focus:border-black focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded border border-black/20 px-4 py-3 text-sm focus:border-black focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded border border-black/20 px-4 py-3 text-sm focus:border-black focus:outline-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded bg-black py-4 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-black/85 disabled:opacity-50"
+              >
+                {loading ? "Creating..." : "Create Account"}
+              </button>
+            </form>
+          )}
+
+          {!success && (
+            <p className="mt-8 text-center text-sm text-black/60">
+              Already have an account?{" "}
+              <Link to="/signin" className="font-bold text-black hover:underline">
+                Sign in
+              </Link>
+            </p>
+          )}
         </div>
-        <p className="text-xs uppercase tracking-widest text-white/40">© 2026 Sole Wala</p>
-      </div>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }

@@ -1,97 +1,111 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
+import { SiteNav } from "@/components/SiteNav";
+import { SiteFooter } from "@/components/SiteFooter";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/signin")({
   head: () => ({
-    meta: [
-      { title: "Sign In — Sole Wala" },
-      { name: "description", content: "Sign in to your Sole Wala account." },
-      { property: "og:title", content: "Sign In — Sole Wala" },
-      { property: "og:description", content: "Sign in to your Sole Wala account." },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Sign In — Sole Wala" }],
   }),
   component: SignInPage,
 });
 
 function SignInPage() {
   const navigate = useNavigate();
+  const { session } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e: FormEvent) => {
+  // Redirect if already logged in
+  if (session) {
+    navigate({ to: "/profile", replace: true });
+    return null;
+  }
+
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Placeholder — will be wired to backend later.
-    alert(`Signed in as ${email} (demo)`);
-    navigate({ to: "/" });
+    setLoading(true);
+    setError(null);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      navigate({ to: "/profile" });
+    }
   };
 
   return (
-    <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
-      <div className="hidden bg-black text-white md:flex md:flex-col md:justify-between md:p-12">
-        <Link to="/" className="text-lg font-black uppercase tracking-tight">Sole Wala</Link>
-        <div>
-          <h1 className="text-6xl font-black uppercase leading-[0.9] tracking-tight">
-            Welcome
-            <br />
-            back to
-            <br />
-            <span className="italic font-serif font-normal">the pavement.</span>
+    <div className="flex min-h-screen flex-col bg-white text-black">
+      <SiteNav theme="light" />
+
+      <main className="flex flex-1 items-center justify-center px-8 py-20">
+        <div className="w-full max-w-md">
+          <h1 className="mb-8 text-center text-4xl font-black uppercase tracking-tight">
+            Sign In
           </h1>
-          <p className="mt-8 max-w-sm text-white/60">
-            Sign in to see your orders, saved sizes, and early access to new drops.
-          </p>
-        </div>
-        <p className="text-xs uppercase tracking-widest text-white/40">© 2026 Sole Wala</p>
-      </div>
 
-      <div className="flex flex-col items-center justify-center bg-white px-8 py-16">
-        <div className="w-full max-w-sm">
-          <Link to="/" className="mb-12 block text-lg font-black uppercase tracking-tight md:hidden">
-            Sole Wala
-          </Link>
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/50">Account</p>
-          <h2 className="mt-3 text-4xl font-black uppercase tracking-tight">Sign in</h2>
+          <form onSubmit={handleSignIn} className="space-y-6">
+            {error && (
+              <div className="rounded border border-red-500/20 bg-red-50 p-4 text-sm text-red-600">
+                {error}
+              </div>
+            )}
 
-          <form onSubmit={onSubmit} className="mt-10 space-y-6">
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-widest">Email</label>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                Email
+              </label>
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border-b border-black/20 bg-transparent py-3 text-sm outline-none focus:border-black"
-                placeholder="you@example.com"
+                className="w-full rounded border border-black/20 px-4 py-3 text-sm focus:border-black focus:outline-none"
               />
             </div>
+
             <div>
-              <label className="mb-2 block text-xs font-semibold uppercase tracking-widest">Password</label>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-black/60">
+                Password
+              </label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border-b border-black/20 bg-transparent py-3 text-sm outline-none focus:border-black"
-                placeholder="••••••••"
+                className="w-full rounded border border-black/20 px-4 py-3 text-sm focus:border-black focus:outline-none"
               />
             </div>
+
             <button
               type="submit"
-              className="w-full rounded-full bg-black py-4 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85"
+              disabled={loading}
+              className="w-full rounded bg-black py-4 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-black/85 disabled:opacity-50"
             >
-              Sign in
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <p className="mt-8 text-sm text-black/60">
-            New here?{" "}
-            <Link to="/signup" className="font-semibold text-black underline underline-offset-4">
-              Create an account
+          <p className="mt-8 text-center text-sm text-black/60">
+            Don't have an account?{" "}
+            <Link to="/signup" className="font-bold text-black hover:underline">
+              Create one
             </Link>
           </p>
         </div>
-      </div>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 }

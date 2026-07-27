@@ -13,9 +13,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as CategoryCategoryIdRouteImport } from './routes/category.$categoryId'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
 
@@ -39,6 +41,11 @@ const OrderSuccessRoute = OrderSuccessRouteImport.update({
   path: '/order-success',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
@@ -52,6 +59,11 @@ const SigninRoute = SigninRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategoryCategoryIdRoute = CategoryCategoryIdRouteImport.update({
@@ -70,9 +82,11 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/order-success': typeof OrderSuccessRoute
+  '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/wishlist': typeof WishlistRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/product/$id': typeof ProductIdRoute
 }
@@ -81,9 +95,11 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/order-success': typeof OrderSuccessRoute
+  '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/wishlist': typeof WishlistRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/product/$id': typeof ProductIdRoute
 }
@@ -93,9 +109,11 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/order-success': typeof OrderSuccessRoute
+  '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
+  '/wishlist': typeof WishlistRoute
   '/category/$categoryId': typeof CategoryCategoryIdRoute
   '/product/$id': typeof ProductIdRoute
 }
@@ -106,9 +124,11 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/order-success'
+    | '/profile'
     | '/shop'
     | '/signin'
     | '/signup'
+    | '/wishlist'
     | '/category/$categoryId'
     | '/product/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -117,9 +137,11 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/order-success'
+    | '/profile'
     | '/shop'
     | '/signin'
     | '/signup'
+    | '/wishlist'
     | '/category/$categoryId'
     | '/product/$id'
   id:
@@ -128,9 +150,11 @@ export interface FileRouteTypes {
     | '/cart'
     | '/checkout'
     | '/order-success'
+    | '/profile'
     | '/shop'
     | '/signin'
     | '/signup'
+    | '/wishlist'
     | '/category/$categoryId'
     | '/product/$id'
   fileRoutesById: FileRoutesById
@@ -140,9 +164,11 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   OrderSuccessRoute: typeof OrderSuccessRoute
+  ProfileRoute: typeof ProfileRoute
   ShopRoute: typeof ShopRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
+  WishlistRoute: typeof WishlistRoute
   CategoryCategoryIdRoute: typeof CategoryCategoryIdRoute
   ProductIdRoute: typeof ProductIdRoute
 }
@@ -177,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
@@ -196,6 +229,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/category/$categoryId': {
@@ -220,9 +260,11 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   OrderSuccessRoute: OrderSuccessRoute,
+  ProfileRoute: ProfileRoute,
   ShopRoute: ShopRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
+  WishlistRoute: WishlistRoute,
   CategoryCategoryIdRoute: CategoryCategoryIdRoute,
   ProductIdRoute: ProductIdRoute,
 }

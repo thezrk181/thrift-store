@@ -1,7 +1,29 @@
+import { Heart } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth-context";
+import { useWishlist, useToggleWishlist } from "@/lib/wishlist";
 import type { Product } from "@/lib/products";
 
 export function ProductCard({ product }: { product: Product }) {
+  const { session } = useAuth();
+  const { data: wishlist = [] } = useWishlist(session?.user?.id);
+  const toggleWishlist = useToggleWishlist();
+
+  const isWishlisted = wishlist.includes(product.id);
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!session) {
+      alert("Please sign in to save items to your wishlist.");
+      return;
+    }
+    toggleWishlist.mutate({
+      userId: session.user.id,
+      productId: product.id,
+      isWishlisted,
+    });
+  };
+
   return (
     <Link
       to="/product/$id"
@@ -20,6 +42,12 @@ export function ProductCard({ product }: { product: Product }) {
           height={1024}
           className="h-full w-full object-cover"
         />
+        <button
+          onClick={handleWishlist}
+          className="absolute right-4 top-4 z-10 rounded-full bg-white/80 p-2 text-black backdrop-blur-sm transition-transform hover:scale-110"
+        >
+          <Heart className={`h-5 w-5 ${isWishlisted ? "fill-red-500 text-red-500" : ""}`} />
+        </button>
       </div>
       <div className="mt-4 flex items-start justify-between gap-4">
         <div>

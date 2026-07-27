@@ -4,9 +4,11 @@ import { placeOrder } from "@/lib/products";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreditCard, Truck, Wallet, CheckCircle2, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAuth } from "@/lib/auth-context";
+import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
@@ -29,6 +31,7 @@ const SHIPPING_COST = 250;
 function CheckoutPage() {
   const { items, subtotal, getProductForItem, clear } = useCart();
   const navigate = useNavigate();
+  const { session } = useAuth();
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +47,34 @@ function CheckoutPage() {
       postalCode: "",
     },
   });
+
+  useEffect(() => {
+    if (session) {
+      form.setValue("email", session.user.email || "");
+      supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single()
+        .then(({ data }) => {
+          if (data) {
+            if (data.first_name) form.setValue("firstName", data.first_name);
+            if (data.last_name) form.setValue("lastName", data.last_name);
+            if (data.phone) form.setValue("phone", data.phone);
+            
+            if (data.saved_address) {
+              const sa = data.saved_address;
+              if (sa.firstName) form.setValue("firstName", sa.firstName);
+              if (sa.lastName) form.setValue("lastName", sa.lastName);
+              if (sa.address) form.setValue("address", sa.address);
+              if (sa.city) form.setValue("city", sa.city);
+              if (sa.postalCode) form.setValue("postalCode", sa.postalCode);
+              if (sa.phone) form.setValue("phone", sa.phone);
+            }
+          }
+        });
+    }
+  }, [session, form]);
 
   const total = subtotal + SHIPPING_COST;
 
@@ -64,7 +95,7 @@ function CheckoutPage() {
       });
 
       const result = await placeOrder(
-        null, // user_id is null for guest checkout
+        session?.user?.id || null, // pass user_id if logged in
         data,
         total,
         orderItems

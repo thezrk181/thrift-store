@@ -5,6 +5,9 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { ProductCard } from "@/components/ProductCard";
 import { fetchProductByIdOrSlug, useProducts } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
+import { Heart } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { useWishlist, useToggleWishlist } from "@/lib/wishlist";
 
 export const Route = createFileRoute("/product/$id")({
   head: ({ loaderData }) => {
@@ -45,6 +48,25 @@ function ProductPage() {
   const { data: allProducts = [] } = useProducts();
   const { addItem } = useCart();
   const navigate = useNavigate();
+  const { session } = useAuth();
+  
+  const { data: wishlist = [] } = useWishlist(session?.user?.id);
+  const toggleWishlist = useToggleWishlist();
+  const isWishlisted = wishlist.includes(product.id);
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!session) {
+      alert("Please sign in to save items to your wishlist.");
+      return;
+    }
+    toggleWishlist.mutate({
+      userId: session.user.id,
+      productId: product.id,
+      isWishlisted,
+    });
+  };
+
   const [size, setSize] = useState<number | null>(null);
   const [color, setColor] = useState(product.colors[0].name);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -92,12 +114,22 @@ function ProductPage() {
           </div>
 
           <div className="flex flex-col">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/50">
-              {product.category}
-            </p>
-            <h1 className="mt-4 text-5xl font-black uppercase leading-none tracking-tight md:text-6xl">
-              {product.name}
-            </h1>
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-black/50">
+                  {product.category}
+                </p>
+                <h1 className="mt-4 text-5xl font-black uppercase leading-none tracking-tight md:text-6xl">
+                  {product.name}
+                </h1>
+              </div>
+              <button
+                onClick={handleWishlist}
+                className="rounded-full bg-[#f3f2ef] p-4 text-black transition-transform hover:scale-110"
+              >
+                <Heart className={`h-6 w-6 ${isWishlisted ? "fill-red-500 text-red-500" : ""}`} />
+              </button>
+            </div>
             <p className="mt-6 text-2xl font-semibold">Rs {product.price.toLocaleString()}</p>
 
             <p className="mt-8 max-w-md text-black/60">{product.description}</p>

@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useCart } from "@/lib/cart-context";
+import { useAuth } from "@/lib/auth-context";
 import { useProducts } from "@/lib/products";
-import { Search, X } from "lucide-react";
+import { Search, X, User, Heart } from "lucide-react";
 
 export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const { count } = useCart();
+  const { session } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: products = [] } = useProducts();
@@ -132,9 +134,20 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
             )}
           </div>
 
-          <Link to="/signin" className={`hidden uppercase tracking-wider md:inline ${linkCls}`}>
-            Sign In
-          </Link>
+          {session ? (
+            <>
+              <Link to="/wishlist" className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}>
+                <Heart size={20} />
+              </Link>
+              <Link to="/profile" className={`uppercase tracking-wider hover:opacity-70 ${linkCls}`}>
+                <User size={20} />
+              </Link>
+            </>
+          ) : (
+            <Link to="/signin" className={`hidden uppercase tracking-wider md:inline ${linkCls}`}>
+              Sign In
+            </Link>
+          )}
           <Link
             to="/cart"
             className={`inline-flex items-center gap-2 uppercase tracking-wider ${linkCls}`}

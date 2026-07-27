@@ -11,6 +11,7 @@ CREATE TABLE public.profiles (
   first_name TEXT,
   last_name TEXT,
   phone TEXT,
+  saved_address JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -130,3 +131,45 @@ CREATE POLICY "Only authenticated users can upload product images."
   ON storage.objects FOR INSERT WITH CHECK (
     bucket_id = 'product-images' AND auth.role() = 'authenticated'
   );
+
+-- ==========================================
+-- WISHLISTS
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS public.wishlists (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  product_id UUID REFERENCES public.products(id) ON DELETE CASCADE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE(user_id, product_id)
+);
+
+ALTER TABLE public.wishlists ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view their own wishlists." ON public.wishlists FOR SELECT USING (auth.uid() = user_id);
+CREATE POLICY "Users can insert their own wishlists." ON public.wishlists FOR INSERT WITH CHECK (auth.uid() = user_id);
+CREATE POLICY "Users can delete their own wishlists." ON public.wishlists FOR DELETE USING (auth.uid() = user_id);
+
+-- ==========================================
+-- TRIGGERS
+-- ==========================================
+
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, first_name, last_name, created_at, updated_at)
+  VALUES (
+    new.id,
+    new.raw_user_meta_data->>'first_name',
+    new.raw_user_meta_data->>'last_name',
+    now(),
+    now()
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
