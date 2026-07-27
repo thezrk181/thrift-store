@@ -52,7 +52,7 @@ function ProductPage() {
   
   const { data: wishlist = [] } = useWishlist(session?.user?.id);
   const toggleWishlist = useToggleWishlist();
-  const isWishlisted = wishlist.includes(product.id);
+  const isWishlisted = wishlist.includes(product.db_id);
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ function ProductPage() {
     }
     toggleWishlist.mutate({
       userId: session.user.id,
-      productId: product.id,
+      productId: product.db_id,
       isWishlisted,
     });
   };

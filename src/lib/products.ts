@@ -3,7 +3,8 @@ import { supabase } from "./supabase";
 import { getProductImageUrl } from "./image-service";
 
 export type Product = {
-  id: string;
+  id: string; // The slug (used for routing)
+  db_id: string; // The actual UUID in the database
   name: string;
   price: number;
   image: string;
@@ -45,6 +46,7 @@ function transformProduct(p: any): Product {
 
   return {
     id: p.slug, // the old frontend expects the URL slug as the 'id' field
+    db_id: p.id,
     name: p.name,
     price: Number(p.base_price),
     image: getProductImageUrl(primaryImage),

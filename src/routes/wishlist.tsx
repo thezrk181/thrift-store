@@ -33,7 +33,7 @@ function WishlistPage() {
 
   // Filter products that are in the user's wishlist
   const wishlistedProducts = allProducts.filter((product: Product) => 
-    wishlistIds.includes(product.id)
+    wishlistIds.includes(product.db_id)
   );
 
   return (
