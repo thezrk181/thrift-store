@@ -17,8 +17,13 @@ CREATE TABLE IF NOT EXISTS public.profiles (
 
 -- Enable RLS for profiles
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.profiles;
 CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert their own profile." ON public.profiles;
 CREATE POLICY "Users can insert their own profile." ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+
+DROP POLICY IF EXISTS "Users can update own profile." ON public.profiles;
 CREATE POLICY "Users can update own profile." ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- 2. PRODUCTS
@@ -36,6 +41,7 @@ CREATE TABLE IF NOT EXISTS public.products (
 
 -- Enable RLS for products
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Products are viewable by everyone." ON public.products;
 CREATE POLICY "Products are viewable by everyone." ON public.products FOR SELECT USING (true);
 -- (Only admins/dashboard can insert/update products, we'll leave that policy for later)
 
@@ -50,6 +56,7 @@ CREATE TABLE IF NOT EXISTS public.product_images (
 
 -- Enable RLS for product_images
 ALTER TABLE public.product_images ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Product images are viewable by everyone." ON public.product_images;
 CREATE POLICY "Product images are viewable by everyone." ON public.product_images FOR SELECT USING (true);
 
 -- 4. PRODUCT VARIANTS (Sizes, Colors, Inventory)
@@ -64,10 +71,15 @@ CREATE TABLE IF NOT EXISTS public.product_variants (
 
 -- Enable RLS for product_variants
 ALTER TABLE public.product_variants ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Product variants are viewable by everyone." ON public.product_variants;
 CREATE POLICY "Product variants are viewable by everyone." ON public.product_variants FOR SELECT USING (true);
 
 -- 5. ORDERS
-CREATE TYPE order_status AS ENUM ('pending', 'paid', 'shipped', 'delivered', 'cancelled');
+DO $$ BEGIN
+    CREATE TYPE order_status AS ENUM ('pending', 'paid', 'shipped', 'delivered', 'cancelled');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
 
 CREATE TABLE IF NOT EXISTS public.orders (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -85,7 +97,10 @@ ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS order_number TEXT UNIQUE;
 
 -- Enable RLS for orders
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view their own orders." ON public.orders;
 CREATE POLICY "Users can view their own orders." ON public.orders FOR SELECT USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can insert their own orders." ON public.orders;
 CREATE POLICY "Users can insert their own orders." ON public.orders FOR INSERT WITH CHECK (auth.uid() = user_id);
 -- (Note: For guest checkouts, you'd need a looser policy or a service key, but this is a secure start)
 
@@ -100,12 +115,15 @@ CREATE TABLE IF NOT EXISTS public.order_items (
 
 -- Enable RLS for order_items
 ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Users can view their own order items." ON public.order_items;
 CREATE POLICY "Users can view their own order items." ON public.order_items FOR SELECT USING (
   EXISTS (
     SELECT 1 FROM public.orders 
     WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid()
   )
 );
+
+DROP POLICY IF EXISTS "Users can insert their own order items." ON public.order_items;
 CREATE POLICY "Users can insert their own order items." ON public.order_items FOR INSERT WITH CHECK (
   EXISTS (
     SELECT 1 FROM public.orders 
@@ -195,9 +213,11 @@ VALUES ('product-images', 'product-images', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Set up Storage RLS Policies
+DROP POLICY IF EXISTS "Product images are publicly accessible." ON storage.objects;
 CREATE POLICY "Product images are publicly accessible." 
   ON storage.objects FOR SELECT USING (bucket_id = 'product-images');
 
+DROP POLICY IF EXISTS "Only authenticated users can upload product images." ON storage.objects;
 CREATE POLICY "Only authenticated users can upload product images." 
   ON storage.objects FOR INSERT WITH CHECK (
     bucket_id = 'product-images' AND auth.role() = 'authenticated'
