@@ -128,6 +128,7 @@ function AdminUsersList() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

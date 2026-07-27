@@ -161,6 +161,7 @@ function AdminOrdersList() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

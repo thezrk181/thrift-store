@@ -114,6 +114,7 @@ function AdminProductsList() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

@@ -194,6 +194,7 @@ function AdminPromos() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

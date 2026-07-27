@@ -102,6 +102,7 @@ function AdminAbandonedCarts() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );
