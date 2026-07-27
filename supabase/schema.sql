@@ -6,7 +6,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- 1. PROFILES (Extends auth.users)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
   first_name TEXT,
   last_name TEXT,
@@ -22,7 +22,7 @@ CREATE POLICY "Users can insert their own profile." ON public.profiles FOR INSER
 CREATE POLICY "Users can update own profile." ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- 2. PRODUCTS
-CREATE TABLE public.products (
+CREATE TABLE IF NOT EXISTS public.products (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
@@ -40,7 +40,7 @@ CREATE POLICY "Products are viewable by everyone." ON public.products FOR SELECT
 -- (Only admins/dashboard can insert/update products, we'll leave that policy for later)
 
 -- 3. PRODUCT IMAGES (Stores Supabase Storage paths)
-CREATE TABLE public.product_images (
+CREATE TABLE IF NOT EXISTS public.product_images (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   product_id UUID REFERENCES public.products(id) ON DELETE CASCADE,
   image_path TEXT NOT NULL,
@@ -53,7 +53,7 @@ ALTER TABLE public.product_images ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Product images are viewable by everyone." ON public.product_images FOR SELECT USING (true);
 
 -- 4. PRODUCT VARIANTS (Sizes, Colors, Inventory)
-CREATE TABLE public.product_variants (
+CREATE TABLE IF NOT EXISTS public.product_variants (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   product_id UUID REFERENCES public.products(id) ON DELETE CASCADE,
   color_name TEXT NOT NULL,
@@ -69,7 +69,7 @@ CREATE POLICY "Product variants are viewable by everyone." ON public.product_var
 -- 5. ORDERS
 CREATE TYPE order_status AS ENUM ('pending', 'paid', 'shipped', 'delivered', 'cancelled');
 
-CREATE TABLE public.orders (
+CREATE TABLE IF NOT EXISTS public.orders (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   order_number TEXT UNIQUE NOT NULL,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL, -- Nullable for guests
@@ -80,6 +80,9 @@ CREATE TABLE public.orders (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- Ensure order_number column exists if the table was already created before
+ALTER TABLE public.orders ADD COLUMN IF NOT EXISTS order_number TEXT UNIQUE;
+
 -- Enable RLS for orders
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view their own orders." ON public.orders FOR SELECT USING (auth.uid() = user_id);
@@ -87,7 +90,7 @@ CREATE POLICY "Users can insert their own orders." ON public.orders FOR INSERT W
 -- (Note: For guest checkouts, you'd need a looser policy or a service key, but this is a secure start)
 
 -- 6. ORDER ITEMS
-CREATE TABLE public.order_items (
+CREATE TABLE IF NOT EXISTS public.order_items (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE,
   product_variant_id UUID REFERENCES public.product_variants(id) ON DELETE RESTRICT,
