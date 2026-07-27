@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useProducts } from "@/lib/products";
 import heroImg from "@/assets/shoe-hero.jpg";
 import vibeImg from "@/assets/vibe.jpg";
+import LiquidEther from "@/components/LiquidEther";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -28,8 +29,11 @@ function HomePage() {
       <SiteNav theme="light" />
 
       {/* HERO */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="mx-auto grid max-w-[1400px] gap-10 px-8 pt-16 pb-8 md:grid-cols-12 md:pt-24">
+      <section id="hero-section" className="relative overflow-hidden bg-white">
+        <div className="absolute inset-0 z-0">
+          <LiquidEther />
+        </div>
+        <div className="relative z-10 mx-auto grid max-w-[1400px] gap-10 px-8 pt-16 pb-8 md:grid-cols-12 md:pt-24">
           <div className="md:col-span-6">
             <p className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-black/50">
               SS26 · Collection 04
@@ -77,7 +81,7 @@ function HomePage() {
             />
           </div>
         </div>
-        <div className="border-t border-black/10">
+        <div className="relative z-10 border-t border-black/10">
           <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-8 px-8 py-6 text-sm md:grid-cols-4">
             <div><span className="font-black text-lg">120+</span><p className="text-black/50">Happy customers</p></div>
             <div><span className="font-black text-lg">4.9/5</span><p className="text-black/50">Avg. rating</p></div>

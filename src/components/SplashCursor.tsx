@@ -1216,6 +1216,7 @@ export default function SplashCursor({
     }
 
     window.addEventListener('mousedown', e => {
+      if ((e.target as Element)?.closest?.('#hero-section')) return;
       const pointer = pointers[0];
       const posX = scaleByPixelRatio(e.clientX);
       const posY = scaleByPixelRatio(e.clientY);
@@ -1235,6 +1236,7 @@ export default function SplashCursor({
     document.body.addEventListener('mousemove', handleFirstMouseMove);
 
     window.addEventListener('mousemove', e => {
+      if ((e.target as Element)?.closest?.('#hero-section')) return;
       const pointer = pointers[0];
       const posX = scaleByPixelRatio(e.clientX);
       const posY = scaleByPixelRatio(e.clientY);
@@ -1258,6 +1260,7 @@ export default function SplashCursor({
     window.addEventListener(
       'touchstart',
       e => {
+        if ((e.target as Element)?.closest?.('#hero-section')) return;
         const touches = e.targetTouches;
         const pointer = pointers[0];
         for (let i = 0; i < touches.length; i++) {
@@ -1272,6 +1275,7 @@ export default function SplashCursor({
     window.addEventListener(
       'touchmove',
       e => {
+        if ((e.target as Element)?.closest?.('#hero-section')) return;
         const touches = e.targetTouches;
         const pointer = pointers[0];
         for (let i = 0; i < touches.length; i++) {
