@@ -116,7 +116,7 @@ function AdminEditProduct() {
       if (productError) throw productError;
 
       // 2. Upsert Variants
-      for (const v of variants) {
+      await Promise.all(variants.map(async (v) => {
         if (v.id) {
           // Update existing
           const { error: variantError } = await supabase
@@ -142,7 +142,7 @@ function AdminEditProduct() {
             });
           if (variantError) throw variantError;
         }
-      }
+      }));
 
       // Invalidate and redirect
       queryClient.invalidateQueries({ queryKey: ["products"] });

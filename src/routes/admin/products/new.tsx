@@ -77,8 +77,7 @@ function AdminNewProduct() {
 
       // 2. Upload Images
       if (imageFiles.length > 0) {
-        for (let i = 0; i < imageFiles.length; i++) {
-          const file = imageFiles[i];
+        await Promise.all(imageFiles.map(async (file, i) => {
           const fileExt = file.name.split(".").pop();
           const fileName = `${product.id}/${Date.now()}-${i}.${fileExt}`;
 
@@ -98,7 +97,7 @@ function AdminNewProduct() {
             });
             
           if (imageRecordError) throw imageRecordError;
-        }
+        }));
       }
 
       // 3. Create Variants
