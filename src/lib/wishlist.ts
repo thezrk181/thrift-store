@@ -39,7 +39,28 @@ export function useToggleWishlist() {
         if (error) throw error;
       }
     },
-    onSuccess: (_, { userId }) => {
+    onMutate: async ({ userId, productId, isWishlisted }) => {
+      await queryClient.cancelQueries({ queryKey: ["wishlist", userId] });
+      const previousWishlist = queryClient.getQueryData<string[]>(["wishlist", userId]);
+      
+      queryClient.setQueryData<string[]>(["wishlist", userId], (old = []) => {
+        if (isWishlisted) {
+          return old.filter(id => id !== productId);
+        } else {
+          return [...old, productId];
+        }
+      });
+
+      return { previousWishlist };
+    },
+    onError: (err, { userId }, context) => {
+      console.error("Wishlist mutation error:", err);
+      alert("Error updating wishlist: " + err.message);
+      if (context?.previousWishlist) {
+        queryClient.setQueryData(["wishlist", userId], context.previousWishlist);
+      }
+    },
+    onSettled: (_, __, { userId }) => {
       queryClient.invalidateQueries({ queryKey: ["wishlist", userId] });
     },
   });

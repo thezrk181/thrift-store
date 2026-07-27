@@ -56,6 +56,7 @@ function ProductPage() {
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!session) {
       alert("Please sign in to save items to your wishlist.");
       return;
