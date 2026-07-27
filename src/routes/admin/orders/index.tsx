@@ -1,43 +1,39 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/admin/orders/")({
   component: AdminOrdersList,
 });
 
 function AdminOrdersList() {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  async function fetchOrders() {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("orders")
-      .select(`
-        *,
-        profiles ( first_name, last_name, phone ),
-        order_items (
-          quantity,
-          price_at_time,
-          product_variants (
-            size,
-            color_name,
-            products ( name )
+  const { data: orders = [], isLoading: loading } = useQuery({
+    queryKey: ["admin-orders"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select(`
+          *,
+          profiles ( first_name, last_name, phone ),
+          order_items (
+            quantity,
+            price_at_time,
+            product_variants (
+              size,
+              color_name,
+              products ( name )
+            )
           )
-        )
-      `)
-      .order("created_at", { ascending: false });
-
-    if (!error && data) {
-      setOrders(data);
+        `)
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
     }
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  });
 
   const updateStatus = async (orderId: string, newStatus: string) => {
     const { error } = await supabase
@@ -46,8 +42,10 @@ function AdminOrdersList() {
       .eq("id", orderId);
       
     if (!error) {
-      // Optimistically update
-      setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+      // Optimistically update cache
+      queryClient.setQueryData(["admin-orders"], (old: any[]) => 
+        old.map(o => o.id === orderId ? { ...o, status: newStatus } : o)
+      );
     } else {
       alert("Error updating status: " + error.message);
     }

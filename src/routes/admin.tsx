@@ -65,7 +65,14 @@ function AdminLayout() {
             })}
           </nav>
           
-          <div className="border-t border-zinc-100 pt-4">
+          <div className="border-t border-zinc-100 pt-4 space-y-2">
+            <Link
+              to="/"
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100"
+            >
+              <Store className="h-5 w-5" />
+              Storefront
+            </Link>
             <button
               onClick={() => signOut().then(() => navigate({ to: "/" }))}
               className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"

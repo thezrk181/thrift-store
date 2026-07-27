@@ -2,18 +2,18 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Shield, ShieldAlert } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/admin/users/")({
   component: AdminUsersList,
 });
 
 function AdminUsersList() {
-  const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    async function fetchUsers() {
-      // Fetch all profiles along with their order counts
+  const { data: users = [], isLoading: loading } = useQuery({
+    queryKey: ["admin-users"],
+    queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
         .select(`
@@ -22,13 +22,10 @@ function AdminUsersList() {
         `)
         .order("created_at", { ascending: false });
 
-      if (!error && data) {
-        setUsers(data);
-      }
-      setLoading(false);
+      if (error) throw error;
+      return data || [];
     }
-    fetchUsers();
-  }, []);
+  });
 
   const toggleAdmin = async (userId: string, currentStatus: boolean) => {
     if (window.confirm(`Are you sure you want to ${currentStatus ? 'revoke' : 'grant'} admin access for this user?`)) {
@@ -38,7 +35,10 @@ function AdminUsersList() {
         .eq("id", userId);
         
       if (!error) {
-        setUsers(users.map(u => u.id === userId ? { ...u, is_admin: !currentStatus } : u));
+        // Optimistically update cache
+        queryClient.setQueryData(["admin-users"], (old: any[]) =>
+          old.map(u => u.id === userId ? { ...u, is_admin: !currentStatus } : u)
+        );
       } else {
         alert("Error updating admin status: " + error.message);
       }
