@@ -3,12 +3,13 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useCart } from "@/lib/cart-context";
 import { useAuth } from "@/lib/auth-context";
 import { useProducts } from "@/lib/products";
-import { Search, X, User, Heart, Shield } from "lucide-react";
+import { Search, X, User, Heart, Shield, Menu } from "lucide-react";
 
 export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const { count } = useCart();
   const { session, isAdmin } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { data: products = [] } = useProducts();
   const navigate = useNavigate();
@@ -47,9 +48,17 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   return (
     <header className={`sticky top-0 z-50 border-b ${base}`}>
       <div className="mx-auto flex max-w-[1400px] items-center justify-between px-8 py-5">
-        <Link to="/" className="text-lg font-black tracking-tight uppercase">
-          Sole Wala
-        </Link>
+        <div className="flex items-center gap-4">
+          <button 
+            className={`md:hidden ${linkCls}`}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+          <Link to="/" className="text-lg font-black tracking-tight uppercase" onClick={() => setIsMobileMenuOpen(false)}>
+            Sole Wala
+          </Link>
+        </div>
         <nav className="hidden gap-10 text-sm font-medium uppercase tracking-wider md:flex">
           <Link to="/" className={linkCls} activeOptions={{ exact: true }} activeProps={{ className: isDark ? "text-white" : "text-black" }}>
             Home
@@ -168,6 +177,23 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
           </Link>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <div className={`md:hidden absolute top-full left-0 w-full border-b shadow-lg ${isDark ? "bg-black border-white/10" : "bg-white border-black/10"}`}>
+          <nav className="flex flex-col p-6 font-bold uppercase tracking-wider text-sm space-y-6">
+            <Link to="/" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+            <Link to="/shop" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
+            <Link to="/category/$categoryId" params={{ categoryId: "new" }} className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>New Arrivals</Link>
+            <Link to="/category/$categoryId" params={{ categoryId: "sale" }} className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
+            {!session && (
+              <div className="pt-4 border-t border-black/10 dark:border-white/10">
+                <Link to="/signin" className={linkCls} onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
+              </div>
+            )}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
