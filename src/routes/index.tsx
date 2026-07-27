@@ -55,13 +55,13 @@ function HomePage() {
               Materials that last, silhouettes that don't shout.
             </p>
             <div className="mt-10 flex items-center gap-4">
-              <a
-                href="#grid"
+              <Link
+                to="/shop"
                 className="inline-flex items-center gap-3 rounded-full bg-black px-7 py-4 text-sm font-semibold uppercase tracking-wider text-white hover:bg-black/85"
               >
                 Shop the drop
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-black">↗</span>
-              </a>
+              </Link>
               <Link
                 to="/product/$id"
                 params={{ id: "phantom-black" }}
@@ -117,9 +117,20 @@ function HomePage() {
             {isLoading ? (
               <p className="py-24 text-center col-span-full">Loading products...</p>
             ) : (
-              products.map((p) => <ProductCard key={p.id} product={p} />)
+              products.slice(0, 8).map((p) => <ProductCard key={p.id} product={p} />)
             )}
           </div>
+          
+          {!isLoading && products.length > 0 && (
+            <div className="mt-16 text-center">
+              <Link 
+                to="/shop"
+                className="inline-block rounded-full border border-black/10 px-8 py-4 text-sm font-semibold uppercase tracking-wider text-black transition-colors hover:border-black hover:bg-black hover:text-white"
+              >
+                Shop All Arrivals
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

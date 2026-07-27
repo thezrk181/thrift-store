@@ -22,17 +22,21 @@ CREATE POLICY "Users can insert their own profile." ON public.profiles FOR INSER
 CREATE POLICY "Users can update own profile." ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- 2. PRODUCTS
-CREATE TABLE public.products (
+CREATE TABLE IF NOT EXISTS public.products (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,
   name TEXT NOT NULL,
   description TEXT,
   base_price NUMERIC(10, 2) NOT NULL,
   category TEXT NOT NULL,
+  condition TEXT DEFAULT 'Good',
   tags TEXT[] DEFAULT '{}'::TEXT[],
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- Ensure condition column exists if the table was already created before
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS condition TEXT DEFAULT 'Good';
 
 -- Enable RLS for products
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;

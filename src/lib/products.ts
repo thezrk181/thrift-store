@@ -11,6 +11,7 @@ export type Product = {
   colors: { name: string; hex: string }[];
   variants: { id: string; size: number; color: string; stock_quantity: number }[];
   category: string;
+  condition?: string;
   tags: string[];
   description: string;
 };
@@ -51,6 +52,7 @@ function transformProduct(p: any): Product {
     colors: Array.from(colorsMap.values()),
     variants,
     category: p.category,
+    condition: p.condition || "Good",
     tags: p.tags || [],
     description: p.description || "",
   };
