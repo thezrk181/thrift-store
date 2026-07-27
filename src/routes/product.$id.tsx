@@ -36,7 +36,7 @@ export const Route = createFileRoute("/product/$id")({
   notFoundComponent: () => (
     <div className="min-h-screen bg-white">
       <SiteNav />
-      <div className="mx-auto max-w-2xl px-8 py-32 text-center">
+      <div className="mx-auto max-w-2xl px-8 pt-40 pb-32 text-center">
         <h1 className="text-4xl font-black uppercase">Not found</h1>
         <p className="mt-4 text-black/60">That style has walked off. Back to the shop.</p>
         <Link
@@ -155,7 +155,7 @@ function ProductPage() {
     <div className="min-h-screen bg-white text-black">
       <SiteNav />
 
-      <div className="mx-auto max-w-[1400px] px-4 md:px-8 py-8 md:py-12">
+      <div className="mx-auto max-w-[1400px] px-4 md:px-8 pt-32 pb-8 md:pb-12">
         <nav className="mb-8 text-xs uppercase tracking-widest text-black/50">
           <Link to="/" className="hover:text-black">
             Shop

@@ -40,7 +40,7 @@ function WishlistPage() {
     <div className="flex min-h-screen flex-col bg-white text-black">
       <SiteNav theme="light" />
 
-      <main className="mx-auto w-full max-w-[1400px] flex-1 px-8 py-16">
+      <main className="mx-auto w-full max-w-[1400px] flex-1 px-8 pt-32 pb-16">
         <header className="mb-12">
           <h1 className="text-4xl font-black uppercase tracking-tight">My Wishlist</h1>
           <p className="mt-2 text-sm text-black/60">

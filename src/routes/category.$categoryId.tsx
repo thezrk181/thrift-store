@@ -28,7 +28,7 @@ function CategoryPage() {
       <SiteNav theme="light" />
 
       {/* CATEGORY HEADER */}
-      <section className="bg-[#f3f2ef] pt-24 pb-16">
+      <section className="bg-[#f3f2ef] pt-32 pb-16">
         <div className="mx-auto max-w-[1400px] px-8 text-center">
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-black/50">
             Category

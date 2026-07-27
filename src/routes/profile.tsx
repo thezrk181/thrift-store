@@ -101,7 +101,7 @@ function ProfilePage() {
     <div className="flex min-h-screen flex-col bg-[#f3f2ef] text-black">
       <SiteNav theme="light" />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-8 py-16">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-8 pt-32 pb-16">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-16 border-b border-black/10 pb-8">
           <div>
             <h1 className="text-4xl font-black uppercase tracking-tight">My Account</h1>

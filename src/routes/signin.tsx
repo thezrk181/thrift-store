@@ -48,7 +48,7 @@ function SignInPage() {
     <div className="flex min-h-screen flex-col bg-white text-black">
       <SiteNav theme="light" />
 
-      <main className="flex flex-1 items-center justify-center px-8 py-20">
+      <main className="flex flex-1 items-center justify-center px-8 pt-32 pb-20">
         <div className="w-full max-w-md">
           <h1 className="mb-8 text-center text-4xl font-black uppercase tracking-tight">Sign In</h1>
 

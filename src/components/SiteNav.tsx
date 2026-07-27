@@ -80,7 +80,7 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const textColor = isDark ? "#ffffff" : "#000000";
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-4 flex items-center justify-between pointer-events-none">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-4 flex items-center justify-between pointer-events-none">
       
       {/* Search Bar Floating Container */}
       <div className="pointer-events-auto flex-1 flex justify-start relative" ref={searchRef}>

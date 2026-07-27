@@ -95,7 +95,7 @@ function ShopPage() {
       <SiteNav theme="light" />
 
       {/* HEADER */}
-      <section className="bg-[#f3f2ef] pt-24 pb-16">
+      <section className="bg-[#f3f2ef] pt-32 pb-16">
         <div className="mx-auto max-w-[1400px] px-8 text-center">
           <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">Shop All</h1>
         </div>

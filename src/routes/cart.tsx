@@ -27,7 +27,7 @@ function CartPage() {
     <div className="min-h-screen bg-white text-black">
       <SiteNav />
 
-      <div className="mx-auto max-w-[1400px] px-8 py-16">
+      <div className="mx-auto max-w-[1400px] px-8 pt-32 pb-16">
         <div className="mb-12 flex items-end justify-between">
           <h1 className="text-5xl font-black uppercase tracking-tight md:text-7xl">Your Bag</h1>
           <p className="text-sm text-black/60">

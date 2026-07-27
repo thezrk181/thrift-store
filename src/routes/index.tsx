@@ -54,7 +54,7 @@ function HomePage() {
             />
           </Suspense>
         </div>
-        <div className="relative z-10 mx-auto grid max-w-[1400px] gap-10 px-8 pt-16 pb-8 md:grid-cols-12 md:pt-24">
+        <div className="relative z-10 mx-auto grid max-w-[1400px] gap-10 px-8 pt-28 pb-8 md:grid-cols-12 md:pt-36">
           <div className="md:col-span-6">
             <p className="mb-6 text-xs font-semibold uppercase tracking-[0.25em] text-black/50">
               SS26 · Collection 04
