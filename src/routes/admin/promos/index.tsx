@@ -142,7 +142,8 @@ function AdminPromos() {
       )}
 
       <div className="rounded-xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
-        <table className="w-full text-left text-sm text-zinc-600">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-zinc-600">
           <thead className="bg-zinc-50 text-xs uppercase text-zinc-900 border-b border-zinc-200">
             <tr>
               <th className="px-6 py-4 font-bold">Code</th>

@@ -155,7 +155,7 @@ function ProductPage() {
     <div className="min-h-screen bg-white text-black">
       <SiteNav />
 
-      <div className="mx-auto max-w-[1400px] px-8 py-12">
+      <div className="mx-auto max-w-[1400px] px-4 md:px-8 py-8 md:py-12">
         <nav className="mb-8 text-xs uppercase tracking-widest text-black/50">
           <Link to="/" className="hover:text-black">
             Shop
@@ -291,7 +291,7 @@ function ProductPage() {
         </div>
 
         {/* Reviews Section */}
-        <section className="mt-32 border-t border-black/10 pt-16">
+        <section className="mt-16 md:mt-32 border-t border-black/10 pt-16">
           <div className="flex items-end justify-between mb-10">
             <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">Reviews</h2>
           </div>
@@ -404,7 +404,7 @@ function ProductPage() {
         </section>
 
         {/* Related */}
-        <section className="mt-32">
+        <section className="mt-16 md:mt-32">
           <div className="mb-10 flex items-end justify-between">
             <h2 className="text-3xl font-black uppercase tracking-tight md:text-4xl">
               You might also like

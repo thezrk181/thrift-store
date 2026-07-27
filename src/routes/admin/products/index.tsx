@@ -54,16 +54,17 @@ function AdminProductsList() {
       </div>
 
       <div className="rounded-xl border border-zinc-200 bg-white shadow-sm overflow-hidden">
-        <table className="w-full text-left text-sm text-zinc-600">
-          <thead className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase text-zinc-900">
-            <tr>
-              <th className="px-6 py-4 font-bold">Product</th>
-              <th className="px-6 py-4 font-bold">Category</th>
-              <th className="px-6 py-4 font-bold">Price</th>
-              <th className="px-6 py-4 font-bold">Condition</th>
-              <th className="px-6 py-4 text-right font-bold">Actions</th>
-            </tr>
-          </thead>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-zinc-600">
+            <thead className="border-b border-zinc-200 bg-zinc-50 text-xs uppercase text-zinc-900">
+              <tr>
+                <th className="px-6 py-4 font-bold">Product</th>
+                <th className="px-6 py-4 font-bold">Category</th>
+                <th className="px-6 py-4 font-bold">Price</th>
+                <th className="px-6 py-4 font-bold">Condition</th>
+                <th className="px-6 py-4 text-right font-bold">Actions</th>
+              </tr>
+            </thead>
           <tbody className="divide-y divide-zinc-200">
             {products.length === 0 ? (
               <tr>

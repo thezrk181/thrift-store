@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import {
   LayoutDashboard,
@@ -10,6 +10,8 @@ import {
   Store,
   Ticket,
   ShoppingCart,
+  Menu,
+  X,
 } from "lucide-react";
 
 const adminLinks = [
@@ -44,11 +46,28 @@ function AdminLayout() {
     );
   }
 
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  // Close sidebar on route change
+  useEffect(() => {
+    setIsMobileOpen(false);
+  }, [router.location.pathname]);
+
   return (
     <div className="flex min-h-screen bg-zinc-50 font-sans text-zinc-900">
+      {/* Mobile Overlay */}
+      {isMobileOpen && (
+        <div 
+          className="fixed inset-0 z-30 bg-black/50 md:hidden" 
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-zinc-200 bg-white">
-        <div className="flex h-16 items-center px-6 border-b border-zinc-200">
+      <aside className={`fixed left-0 top-0 z-40 h-screen w-64 border-r border-zinc-200 bg-white transition-transform duration-300 ease-in-out ${
+        isMobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      }`}>
+        <div className="flex h-16 items-center justify-between px-6 border-b border-zinc-200">
           <Link
             to="/"
             className="flex items-center gap-2 font-black uppercase tracking-tight hover:opacity-70"
@@ -56,6 +75,9 @@ function AdminLayout() {
             <Store className="h-5 w-5" />
             <span>Sole Wala Admin</span>
           </Link>
+          <button className="md:hidden" onClick={() => setIsMobileOpen(false)}>
+            <X className="h-5 w-5 text-zinc-500" />
+          </button>
         </div>
 
         <div className="flex h-[calc(100vh-4rem)] flex-col justify-between p-4">
@@ -100,8 +122,17 @@ function AdminLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="ml-64 flex-1 p-8">
-        <Outlet />
+      <main className="flex-1 md:ml-64 w-full">
+        {/* Mobile Header */}
+        <div className="md:hidden flex h-16 items-center px-6 border-b border-zinc-200 bg-white">
+          <button onClick={() => setIsMobileOpen(true)} className="mr-4">
+            <Menu className="h-6 w-6" />
+          </button>
+          <span className="font-black uppercase tracking-tight">Admin</span>
+        </div>
+        <div className="p-4 md:p-8">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

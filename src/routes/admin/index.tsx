@@ -217,6 +217,7 @@ function AdminDashboard() {
                 View All
               </Link>
             </div>
+          <div className="overflow-x-auto">
             <table className="w-full text-left text-sm text-zinc-600">
               <thead className="bg-zinc-50 text-xs uppercase text-zinc-500">
                 <tr>
@@ -266,6 +267,7 @@ function AdminDashboard() {
                 )}
               </tbody>
             </table>
+          </div>
           </div>
         </div>
 

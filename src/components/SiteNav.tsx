@@ -100,7 +100,7 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
             Sale
           </Link>
         </nav>
-        <div className="flex items-center gap-6 text-sm relative" ref={searchRef}>
+        <div className="flex items-center gap-4 md:gap-6 text-sm relative" ref={searchRef}>
           {/* SEARCH TRIGGER / INPUT */}
           <div className="flex items-center">
             <div
