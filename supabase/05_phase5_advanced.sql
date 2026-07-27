@@ -119,3 +119,10 @@ BEGIN
   ORDER BY c.updated_at DESC;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+
+-- 7. FIX ADMIN ACCESS TO ORDER ITEMS
+-- In Phase 4, we forgot to give admins access to view order_items!
+DROP POLICY IF EXISTS "Admins can view all order items." ON public.order_items;
+CREATE POLICY "Admins can view all order items." ON public.order_items
+  FOR SELECT USING (public.is_admin(auth.uid()));
