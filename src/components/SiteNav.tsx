@@ -80,7 +80,7 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const textColor = isDark ? "#ffffff" : "#000000";
 
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-4 flex items-center justify-between pointer-events-none">
+    <div className="fixed top-0 md:top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl md:px-4 flex items-center justify-between pointer-events-none">
       
       {/* Search Bar Floating Container */}
       <div className="pointer-events-auto flex-1 flex justify-start relative" ref={searchRef}>
@@ -150,8 +150,8 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
       </div>
 
       {/* Main Pill Navigation */}
-      <div className={`pointer-events-auto relative flex items-center justify-between gap-4 md:gap-8 bg-white/70 dark:bg-black/70 backdrop-blur-md px-2 py-2 rounded-[28px] border shadow-2xl transition-all w-full md:w-auto ${isDark ? 'border-white/10' : 'border-black/10'}`}>
-        <Link to="/" className="pl-2 md:pl-4 font-black text-lg md:text-xl uppercase tracking-tighter whitespace-nowrap">SOLE WALA</Link>
+      <div className={`pointer-events-auto relative flex items-center justify-between gap-4 md:gap-8 bg-white/70 dark:bg-black/70 backdrop-blur-md px-4 py-3 md:px-2 md:py-2 rounded-none md:rounded-[28px] border-b md:border shadow-sm md:shadow-2xl transition-all w-full md:w-auto ${isDark ? 'border-white/10' : 'border-black/10'}`}>
+        <Link to="/" className="md:pl-4 font-black text-xl uppercase tracking-tighter whitespace-nowrap">SOLE WALA</Link>
         <PillNav
           items={navItems}
           baseColor={baseColor}
