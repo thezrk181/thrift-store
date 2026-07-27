@@ -84,3 +84,38 @@ CREATE TRIGGER on_order_status_change
   AFTER UPDATE OF status ON public.orders
   FOR EACH ROW
   EXECUTE PROCEDURE log_order_status_email();
+
+
+-- 6. ADMIN CARTS FUNCTION
+-- PostgREST cannot join auth.users directly. This function allows admins to securely fetch carts with user emails.
+CREATE OR REPLACE FUNCTION public.get_admin_carts()
+RETURNS TABLE (
+  id UUID,
+  updated_at TIMESTAMP WITH TIME ZONE,
+  items JSONB,
+  user_id UUID,
+  first_name TEXT,
+  last_name TEXT,
+  email VARCHAR
+) AS $$
+BEGIN
+  -- Check if user is admin
+  IF NOT public.is_admin(auth.uid()) THEN
+    RAISE EXCEPTION 'Access denied';
+  END IF;
+
+  RETURN QUERY
+  SELECT 
+    c.id,
+    c.updated_at,
+    c.items,
+    c.user_id,
+    p.first_name,
+    p.last_name,
+    u.email
+  FROM public.carts c
+  LEFT JOIN public.profiles p ON c.user_id = p.id
+  LEFT JOIN auth.users u ON c.user_id = u.id
+  ORDER BY c.updated_at DESC;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

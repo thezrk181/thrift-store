@@ -11,29 +11,20 @@ function AdminAbandonedCarts() {
   const { data: carts = [], isLoading } = useQuery({
     queryKey: ["admin-abandoned-carts"],
     queryFn: async () => {
-      // Fetch carts that have items in them
-      const { data, error } = await supabase
-        .from("carts")
-        .select(`
-          id,
-          updated_at,
-          items,
-          user_id,
-          users:user_id ( id, raw_user_meta_data, email )
-        `)
-        .order("updated_at", { ascending: false });
+      // Fetch carts using the secure RPC function to get user emails
+      const { data, error } = await supabase.rpc("get_admin_carts");
       
       if (error) throw error;
       
       // Filter out empty carts and format
       return (data || [])
-        .filter(cart => cart.items && Array.isArray(cart.items) && cart.items.length > 0)
-        .map(cart => ({
+        .filter((cart: any) => cart.items && Array.isArray(cart.items) && cart.items.length > 0)
+        .map((cart: any) => ({
           ...cart,
-          user_name: cart.users?.raw_user_meta_data?.first_name 
-            ? `${cart.users.raw_user_meta_data.first_name} ${cart.users.raw_user_meta_data.last_name}` 
+          user_name: cart.first_name 
+            ? `${cart.first_name} ${cart.last_name || ''}`.trim() 
             : 'Unknown User',
-          email: cart.users?.email
+          email: cart.email
         }));
     }
   });
