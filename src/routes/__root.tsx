@@ -125,10 +125,12 @@ function RootComponent() {
       <AuthProvider>
         <CartProvider>
           <SplashCursor
-            SIM_RESOLUTION={64}
-            DYE_RESOLUTION={512}
+            SIM_RESOLUTION={32}
+            DYE_RESOLUTION={256}
             CAPTURE_RESOLUTION={256}
             PRESSURE_ITERATIONS={10}
+            SPLAT_RADIUS={0.4}
+            SPLAT_FORCE={8000}
           />
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
