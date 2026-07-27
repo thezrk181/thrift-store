@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -9,6 +9,7 @@ export const Route = createFileRoute("/admin/orders/")({
 
 function AdminOrdersList() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const { data: orders = [], isLoading: loading } = useQuery({
     queryKey: ["admin-orders"],
@@ -68,6 +69,7 @@ function AdminOrdersList() {
               <th className="px-6 py-4 font-bold">Items</th>
               <th className="px-6 py-4 font-bold">Total</th>
               <th className="px-6 py-4 font-bold">Status</th>
+              <th className="px-6 py-4 font-bold text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-200">
@@ -79,10 +81,21 @@ function AdminOrdersList() {
               </tr>
             ) : (
               orders.map((order) => (
-                <tr key={order.id} className="hover:bg-zinc-50">
+                <tr 
+                  key={order.id} 
+                  className="hover:bg-zinc-50 cursor-pointer group"
+                  onClick={(e) => {
+                    // Prevent navigation if clicking on select dropdown
+                    if ((e.target as HTMLElement).tagName.toLowerCase() !== 'select') {
+                      navigate({ to: `/admin/orders/${order.id}` });
+                    }
+                  }}
+                >
                   <td className="px-6 py-4">
-                    <div className="font-mono text-xs text-zinc-900">{order.id.split('-')[0]}...</div>
-                    <div className="mt-1 text-xs">{new Date(order.created_at).toLocaleDateString()}</div>
+                    <div className="font-mono text-xs font-bold text-zinc-900 group-hover:text-black transition-colors">
+                      {order.id.split('-')[0]}...
+                    </div>
+                    <div className="mt-1 text-xs text-zinc-500">{new Date(order.created_at).toLocaleDateString()}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="font-bold text-zinc-900">
@@ -124,6 +137,15 @@ function AdminOrdersList() {
                       <option value="delivered">Delivered</option>
                       <option value="cancelled">Cancelled</option>
                     </select>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <Link 
+                      to={`/admin/orders/${order.id}`}
+                      className="text-xs font-bold text-zinc-400 hover:text-black transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      View Details &rarr;
+                    </Link>
                   </td>
                 </tr>
               ))
