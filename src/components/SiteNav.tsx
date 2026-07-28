@@ -183,7 +183,16 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
     <div className="md:hidden">
       <StaggeredMenu 
         position="right"
-        items={navItems.map(item => ({ label: item.label, link: item.href || '/' }))}
+        items={[
+          { label: "Home", link: "/" },
+          { label: "Shop", link: "/shop" },
+          { label: "New", link: "/shop?sort=newest" },
+          { label: "Sale", link: "/shop?sale=true" },
+          ...(isAdmin ? [{ label: "Admin", link: "/admin" }] : []),
+          { label: "Wishlist", link: "/wishlist" },
+          { label: user ? "Profile" : "Sign In", link: user ? "/profile" : "/signin" },
+          { label: `Cart${(count ?? 0) > 0 ? ` (${count})` : ''}`, link: "/cart" },
+        ]}
         socialItems={[
           { label: 'Instagram', link: 'https://instagram.com' },
           { label: 'Twitter', link: 'https://twitter.com' }
