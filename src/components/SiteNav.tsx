@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useProducts } from "@/lib/products";
 import { Search, X, User, Heart, Shield } from "lucide-react";
 import PillNav, { PillNavItem } from "./PillNav";
+import StaggeredMenu from "./StaggeredMenu";
 
 export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const { count } = useCart();
@@ -80,7 +81,8 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
   const textColor = isDark ? "#ffffff" : "#000000";
 
   return (
-    <div className="fixed top-0 md:top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl md:px-4 flex items-center justify-between pointer-events-none">
+    <>
+    <div className="hidden fixed top-0 md:top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl md:px-4 md:flex items-center justify-between pointer-events-none">
       
       {/* Search Bar Floating Container */}
       <div className="pointer-events-auto absolute md:relative top-2 md:top-auto left-2 md:left-auto flex-1 flex justify-start z-10" ref={searchRef}>
@@ -176,5 +178,25 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
 
       <div className="flex-1 hidden md:block"></div>
     </div>
+
+    {/* MOBILE NAV: STAGGERED MENU */}
+    <div className="md:hidden">
+      <StaggeredMenu 
+        position="right"
+        items={navItems.map(item => ({ label: item.label, link: item.href || '/' }))}
+        socialItems={[
+          { label: 'Instagram', link: 'https://instagram.com' },
+          { label: 'Twitter', link: 'https://twitter.com' }
+        ]}
+        displaySocials={true}
+        displayItemNumbering={true}
+        colors={['#1a1a1a', '#e6e6e6']}
+        accentColor="#5227FF"
+        isDark={isDark}
+        menuButtonColor={isDark ? '#fff' : '#000'}
+        openMenuButtonColor={isDark ? '#fff' : '#000'}
+      />
+    </div>
+    </>
   );
 }
