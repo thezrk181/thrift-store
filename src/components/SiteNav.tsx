@@ -190,7 +190,7 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
           { label: "Sale", link: "/shop?sale=true" },
           ...(isAdmin ? [{ label: "Admin", link: "/admin" }] : []),
           { label: "Wishlist", link: "/wishlist" },
-          { label: user ? "Profile" : "Sign In", link: user ? "/profile" : "/signin" },
+          { label: session ? "Profile" : "Sign In", link: session ? "/profile" : "/signin" },
           { label: `Cart${(count ?? 0) > 0 ? ` (${count})` : ''}`, link: "/cart" },
         ]}
         socialItems={[
