@@ -83,7 +83,7 @@ export function SiteNav({ theme = "light" }: { theme?: "light" | "dark" }) {
     <div className="fixed top-0 md:top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl md:px-4 flex items-center justify-between pointer-events-none">
       
       {/* Search Bar Floating Container */}
-      <div className="pointer-events-auto flex-1 flex justify-start relative" ref={searchRef}>
+      <div className="pointer-events-auto absolute md:relative top-2 md:top-auto left-2 md:left-auto flex-1 flex justify-start z-10" ref={searchRef}>
         <div className={`flex items-center bg-white/70 dark:bg-black/70 backdrop-blur-md rounded-full shadow-lg border border-black/10 dark:border-white/10 transition-all duration-300 overflow-hidden ${isSearchOpen ? 'w-64 px-4 py-2 opacity-100' : 'w-10 h-10 opacity-0 pointer-events-none -translate-x-4'}`}>
           <Search size={16} className={isDark ? 'text-white/50' : 'text-black/50'} />
           <input
